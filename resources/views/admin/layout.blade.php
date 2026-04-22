@@ -48,7 +48,7 @@
       left: 0;
       bottom: 0;
       z-index: 100;
-      transition: transform .3s cubic-bezier(.4,0,.2,1);
+      transition: transform .3s cubic-bezier(.4,0,.2,1), box-shadow .3s;
       overflow-y: auto;
       overflow-x: hidden;
     }
@@ -59,8 +59,15 @@
     .sidebar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.15); }
 
     @media(max-width:768px) {
-      .sidebar { transform: translateX(-100%); }
-      .sidebar.open { transform: translateX(0); }
+      .sidebar {
+        transform: translateX(-100%);
+        width: 260px;
+        box-shadow: none;
+      }
+      .sidebar.open {
+        transform: translateX(0);
+        box-shadow: 6px 0 32px rgba(0,0,0,.4);
+      }
     }
 
     .sidebar-brand {
@@ -132,11 +139,12 @@
     }
 
     .sidebar-nav {
-      flex: 1;
+      flex: none;
       padding: 0 .5rem;
       display: flex;
       flex-direction: column;
       gap: 1px;
+      margin-bottom: .25rem;
     }
 
     .sidebar-nav a {
@@ -151,6 +159,21 @@
       font-weight: 500;
       transition: all .15s;
       position: relative;
+    }
+
+    @media(max-width:768px) {
+      .sidebar-nav a {
+        padding: .65rem .75rem;
+        font-size: .85rem;
+      }
+      .sidebar-nav a .nav-icon {
+        width: 34px !important;
+        height: 34px !important;
+      }
+      .sidebar-nav a .nav-icon svg {
+        width: 17px !important;
+        height: 17px !important;
+      }
     }
 
     .sidebar-nav a:hover {
@@ -299,6 +322,13 @@
       transition: all .15s;
     }
 
+    @media(max-width:768px) {
+      .sidebar-bottom-links a {
+        padding: .6rem .75rem;
+        font-size: .83rem;
+      }
+    }
+
     .sidebar-bottom-links a:hover {
       color: rgba(255,255,255,.7);
       background: rgba(255,255,255,.04);
@@ -351,10 +381,14 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      min-width: 0;
     }
 
     @media(max-width:768px) {
-      .main { margin-left: 0; }
+      .main {
+        margin-left: 0;
+        width: 100%;
+      }
     }
 
     .topbar {
@@ -408,6 +442,7 @@
       stroke-width: 2;
       stroke-linecap: round;
       stroke-linejoin: round;
+      transition: transform .3s;
     }
 
     @media(max-width:768px) {
@@ -488,19 +523,19 @@
        MOBILE OVERLAY
        ============================================ */
     .sidebar-overlay {
-      display: none;
       position: fixed;
       inset: 0;
-      background: rgba(15,23,42,.5);
+      background: rgba(15,23,42,.55);
       backdrop-filter: blur(4px);
       z-index: 99;
       opacity: 0;
+      pointer-events: none;
       transition: opacity .3s;
     }
 
     .sidebar-overlay.show {
-      display: block;
       opacity: 1;
+      pointer-events: all;
     }
 
     @media(min-width:769px) {
@@ -511,7 +546,7 @@
 <body>
 
 <!-- Mobile Overlay -->
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
 
 <!-- ========== SIDEBAR ========== -->
 <aside class="sidebar" id="sidebar">
@@ -585,7 +620,7 @@
         <span class="nav-badge badge-danger">{{ $unread }}</span>
       @endif
     </a>
-    
+
     <!-- === MENU CV BARU === -->
     <a href="{{ route('admin.cv-builder') }}" class="{{ request()->routeIs('admin.cv-builder*') ? 'active' : '' }}">
       <div class="nav-icon">
@@ -593,7 +628,7 @@
       </div>
       CV Builder
     </a>
-    
+
   </nav>
 
   <div class="sidebar-bottom">
@@ -673,22 +708,29 @@
     document.body.style.overflow = '';
   }
 
+  // Tutup sidebar saat klik overlay
+  overlay.addEventListener('click', closeSidebar);
+
+  // Toggle sidebar saat klik hamburger
   toggle.addEventListener('click', () => {
-    if (sidebar.classList.contains('open')) {
-      closeSidebar();
-    } else {
-      openSidebar();
-    }
+    sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
   });
 
+  // Tutup sidebar otomatis saat klik link navigasi di mobile
+  document.querySelectorAll('.sidebar-nav a, .sidebar-bottom-links a').forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 768) closeSidebar();
+    });
+  });
+
+  // Topbar shadow saat scroll
   window.addEventListener('scroll', () => {
     topbar.classList.toggle('scrolled', window.scrollY > 10);
   }, { passive: true });
 
+  // Tutup sidebar saat resize ke desktop
   window.addEventListener('resize', () => {
-    if (window.innerWidth > 768) {
-      closeSidebar();
-    }
+    if (window.innerWidth > 768) closeSidebar();
   });
 </script>
 

@@ -38,18 +38,17 @@ class ExperienceTest extends TestCase
     {
         $response = $this->get('/admin/experiences');
 
-        // Pastikan redirect ke halaman login
         $response->assertRedirect('/login');
     }
 
     /**
-     * Test 3: Tampilan Publik (Public View Testing)
-     * Data dari admin harus muncul di halaman depan
+     * Test 3: Data tersimpan di database (bukan cek tampilan)
+     * Section experience tidak ditampilkan di publik,
+     * tapi data tetap harus tersimpan dengan benar
      */
-    public function test_experience_is_visible_on_homepage()
+    public function test_experience_is_stored_in_database()
     {
-        // 1. Buat data dummy di database
-        $experience = Experience::create([
+        Experience::create([
             'company' => 'Microsoft',
             'location' => 'Redmond, USA',
             'period'   => '2024',
@@ -57,14 +56,51 @@ class ExperienceTest extends TestCase
             'details'  => 'Mengembangkan teknologi masa depan.'
         ]);
 
-        // 2. Akses halaman utama portofolio
-        // Pastikan '/' adalah URL halaman utamamu (biasanya begitu)
+        // Pastikan halaman publik tetap bisa diakses
         $response = $this->get('/');
+        $response->assertStatus(200);
 
-        // 3. Assertion: Pastikan nama perusahaan muncul di HTML halaman
-        $response->assertSee('Microsoft');
-        
-        // (Opsional) Pastikan role juga muncul
-        $response->assertSee('Software Engineer');
+        // Pastikan data tersimpan di database
+        $this->assertDatabaseHas('experiences', [
+            'company' => 'Microsoft',
+            'role'    => 'Software Engineer',
+        ]);
+    }
+
+    /**
+     * Test 4: Semua data tersimpan di database
+     */
+    public function test_all_experiences_stored_in_database()
+    {
+        Experience::create([
+            'company' => 'Microsoft',
+            'location' => 'USA',
+            'period'   => '2024',
+            'role'     => 'Software Engineer',
+            'details'  => 'Detail Microsoft.'
+        ]);
+
+        Experience::create([
+            'company' => 'Google',
+            'location' => 'California',
+            'period'   => '2023',
+            'role'     => 'Backend Developer',
+            'details'  => 'Detail Google.'
+        ]);
+
+        $this->assertDatabaseHas('experiences', ['company' => 'Microsoft']);
+        $this->assertDatabaseHas('experiences', ['company' => 'Google']);
+        $this->assertDatabaseCount('experiences', 2);
+    }
+
+    /**
+     * Test 5: Database kosong ketika tidak ada data
+     */
+    public function test_experience_empty_when_no_data()
+    {
+        $response = $this->get('/');
+        $response->assertStatus(200);
+
+        $this->assertDatabaseCount('experiences', 0);
     }
 }
