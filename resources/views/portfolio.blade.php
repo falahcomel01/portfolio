@@ -1519,6 +1519,24 @@
     </div>
   </nav>
 
+
+  <!-- ======================== EXPERIENCE ======================== -->
+@if(isset($experiences) && $experiences->count())
+<div class="section-wrap" id="experience">
+    <div class="reveal">
+        <div class="section-tag">Experience</div>
+        <h2 class="section-title">Work <span class="gradient-text">Experience</span></h2>
+    </div>
+    @foreach($experiences as $exp)
+    <div class="reveal">
+        <strong>{{ $exp->company }}</strong> — {{ $exp->role }}
+        <span>{{ $exp->period }}</span>
+        <p>{{ $exp->details }}</p>
+    </div>
+    @endforeach
+</div>
+@endif
+
   <!-- Mobile Menu -->
   <div class="mobile-menu" id="mobileMenu">
     <a href="#home" class="mobile-link">

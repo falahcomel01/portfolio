@@ -8,6 +8,8 @@ use App\Models\About;
 use App\Models\Skill;
 use App\Models\Project;
 use App\Models\Contact;
+use App\Models\Experience;
+
 class PortfolioController extends Controller
 {
     public function index()
@@ -16,17 +18,19 @@ class PortfolioController extends Controller
         $about = About::first();
         $skills = Skill::orderBy('sort_order')->get();
         $projects = Project::orderBy('sort_order')->get();
-         $certificates = \App\Models\Certificate::orderBy('sort_order', 'asc')
-    ->orderBy('issued_date', 'desc')
-    ->get();
+        $certificates = \App\Models\Certificate::orderBy('sort_order', 'asc')
+            ->orderBy('issued_date', 'desc')
+            ->get();
+        $experiences = Experience::orderBy('created_at', 'desc')->get();
 
-    return view('portfolio', compact(
-    'settings',
-    'about',
-    'skills',
-    'projects',
-    'certificates'
-));
+        return view('portfolio', compact(
+            'settings',
+            'about',
+            'skills',
+            'projects',
+            'certificates',
+            'experiences'
+        ));
     }
 
     public function contactSend(Request $request)
