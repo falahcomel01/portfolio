@@ -14,7 +14,7 @@ class AboutController extends Controller
         return view('admin.about', compact('about'));
     }
 
-    public function update(Request $request)
+       public function update(Request $request)
     {
         $validated = $request->validate([
             'content' => 'required|string',
@@ -22,6 +22,11 @@ class AboutController extends Controller
 
         About::updateOrCreate(['id' => 1], $validated);
 
-        return redirect()->route('admin.about')->with('success', 'About berhasil diperbarui!');
+        // --- PERBAIKAN DI SINI ---
+        // Kembalikan respons JSON agar bisa dibaca oleh JavaScript
+        return response()->json([
+            'success' => true,
+            'message' => 'About berhasil diperbarui!'
+        ]);
     }
 }

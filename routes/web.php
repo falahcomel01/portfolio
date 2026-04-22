@@ -8,13 +8,31 @@ use App\Http\Controllers\Admin\SkillController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\CertificateController;
+use App\Http\Controllers\FrontendController;
+use App\Http\Controllers\Admin\CvBuilderController;
+use App\Http\Controllers\Admin\ExperienceController;
+use App\Http\Controllers\Admin\EducationController;
+use App\Http\Controllers\Admin\OrganizationController;
+use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Route;
 
 // === PUBLIC ROUTES ===
 Route::get('/', [PortfolioController::class, 'index'])->name('portfolio');
 Route::post('/contact', [PortfolioController::class, 'contactSend'])->name('contact.send');
+Route::get('/download-cv', [FrontendController::class, 'downloadCv'])->name('download.cv');
 
 // === AUTH ROUTES (Breeze) ===
 require __DIR__.'/auth.php';
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', fn () => redirect()->route('admin.dashboard'))->name('dashboard');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
 // === ADMIN ROUTES (Protected) ===
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
@@ -52,5 +70,15 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::get('/contacts', [ContactController::class, 'index'])->name('contacts');
     Route::get('/contacts/{contact}', [ContactController::class, 'show'])->name('contacts.show');
     Route::delete('/contacts/{contact}', [ContactController::class, 'destroy'])->name('contacts.destroy');
+
+    // === CV BUILDER SYSTEM ===
+    Route::get('/cv-builder', [CvBuilderController::class, 'index'])->name('cv-builder');
+    // YANG DIPERBAIKI: POST JADI PUT
+    Route::put('/cv-builder/profile', [CvBuilderController::class, 'updateProfile'])->name('cv-builder.profile');
+
+    // Resource Routes (CRUD Otomatis)
+    Route::resource('experiences', ExperienceController::class);
+    Route::resource('educations', EducationController::class);
+    Route::resource('organizations', OrganizationController::class);
 
 });

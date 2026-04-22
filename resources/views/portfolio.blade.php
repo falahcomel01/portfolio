@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ $settings['title'] ?? 'Ahmad Badrul Falah' }} — Frontend Developer</title>
+  <title>{{ $settings['title'] ?? 'Mostfal.dev — Frontend Developer' }}</title>
   <link rel="icon" type="image/x-icon" href="{{ !empty($settings['favicon']) ? Storage::url($settings['favicon']) : asset('image/favicon.png') }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     /* =============================================
        RESET & VARIABLES
@@ -48,14 +48,18 @@
       --radius-xl: 32px;
     }
 
-    html { scroll-behavior: smooth; }
+    html { 
+      scroll-behavior: smooth; 
+      /* PERBAIKAN: Mencegah horizontal scroll global */
+      overflow-x: hidden; 
+    }
 
     body {
       font-family: 'Inter', sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.6;
-      overflow-x: hidden;
+      overflow-x: hidden; /* PERBAIKAN: Mencegah scroll horizontal */
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
@@ -106,8 +110,8 @@
     }
 
     /* =============================================
-       NAVIGATION
-       ============================================= */
+      NAVIGATION
+      ============================================= */
     #mainNav {
       position: fixed;
       top: 0;
@@ -115,7 +119,7 @@
       padding: 1rem 2rem;
       background: rgba(255,255,255,.6);
       backdrop-filter: blur(24px) saturate(1.5);
-      z-index: 1000;
+      z-index: 1002; /* <--- UBAH DARI 1000 JADI 1002 */
       transition: all .4s cubic-bezier(.4,0,.2,1);
       border-bottom: 1px solid transparent;
     }
@@ -128,6 +132,7 @@
 
     .nav-container {
       max-width: 1200px;
+      width: 100%;
       margin: 0 auto;
       display: flex;
       justify-content: space-between;
@@ -143,6 +148,7 @@
       -webkit-text-fill-color: transparent;
       text-decoration: none;
       position: relative;
+      white-space: nowrap; /* Mencegah logo turun baris */
     }
     .logo::after {
       content: '';
@@ -203,6 +209,7 @@
       padding: 6px;
       border-radius: 8px;
       transition: background .2s;
+      z-index: 1002;
     }
     .hamburger:hover { background: var(--border-light); }
     .hamburger span {
@@ -216,31 +223,74 @@
     .hamburger.active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
     .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
 
+      /* ================= MOBILE MENU STYLE BARU ================= */
     .mobile-menu {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(255,255,255,.97);
-      backdrop-filter: blur(30px);
-      z-index: 999;
+      /* Background lebih gelap transparan agar teks pop-up */
+      background: rgba(255, 255, 255, 0.98); 
+      backdrop-filter: blur(20px);
+      z-index: 1001;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      gap: 1.5rem;
+      gap: 1rem;
     }
-    .mobile-menu.open { display: flex; animation: fadeUp .3s ease; }
-    @keyframes fadeUp { from { opacity: 0; } to { opacity: 1; } }
-    .mobile-menu a {
-      font-size: 1.6rem;
-      font-weight: 700;
-      color: var(--text);
-      text-decoration: none;
-      transition: all .3s;
-      padding: .5rem 1rem;
-      border-radius: 12px;
+    .mobile-menu.open { 
+      display: flex; 
+      /* Hapus animasi fadeUp lama, kita pakai animasi staggered pada link */
     }
-    .mobile-menu a:hover { color: var(--primary); background: var(--primary-ultra); }
 
+    /* Style Link Baru */
+    .mobile-menu a {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-mid);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 1rem 2rem;
+      border-radius: 50px; /* Bentuk pill */
+      min-width: 220px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      
+      /* Awal tersembunyi untuk animasi */
+      opacity: 0;
+      transform: translateY(30px); 
+    }
+
+    /* Efek Hover */
+    .mobile-menu a:hover {
+      color: var(--primary);
+      background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(236,72,153,0.1));
+      transform: scale(1.05) translateY(0); /* Efek pop */
+      box-shadow: 0 4px 15px rgba(99,102,241,0.1);
+    }
+    
+    .mobile-menu a svg {
+      transition: transform 0.3s;
+    }
+    .mobile-menu a:hover svg {
+      transform: rotate(10deg) scale(1.1);
+    }
+
+    /* ================= STAGGERED ANIMATION (Muncul satu per satu) ================= */
+    .mobile-menu.open a:nth-child(1) { animation: slideInUp 0.5s forwards 0.05s; }
+    .mobile-menu.open a:nth-child(2) { animation: slideInUp 0.5s forwards 0.1s; }
+    .mobile-menu.open a:nth-child(3) { animation: slideInUp 0.5s forwards 0.15s; }
+    .mobile-menu.open a:nth-child(4) { animation: slideInUp 0.5s forwards 0.2s; }
+    .mobile-menu.open a:nth-child(5) { animation: slideInUp 0.5s forwards 0.25s; }
+    .mobile-menu.open a:nth-child(6) { animation: slideInUp 0.5s forwards 0.3s; }
+
+    @keyframes slideInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
     @media (max-width: 768px) {
       .nav-links { display: none; }
       .hamburger { display: flex; }
@@ -409,100 +459,174 @@
       box-shadow: 0 8px 30px rgba(99,102,241,.25);
     }
 
-    /* Hero card & code */
+    /* =============================================
+       NEW HERO VISUAL: SERVICES CARD
+       ============================================= */
     .hero-visual {
       position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
+      perspective: 1000px;
     }
 
-    .hero-card {
-      background: rgba(255,255,255,.7);
-      backdrop-filter: blur(20px);
-      border-radius: var(--radius-lg);
-      padding: 2rem;
-      box-shadow: var(--shadow-lg);
+    .id-card-wrapper {
       position: relative;
+      width: 360px;
+      height: 240px;
+      transform-style: preserve-3d;
+      transform: rotateY(-10deg) rotateX(5deg);
+      transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .id-card-wrapper:hover {
+      transform: rotateY(0deg) rotateX(0deg) translateZ(10px);
+    }
+
+    .id-card {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.6));
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border-radius: 24px;
+      box-shadow: 
+        0 20px 40px rgba(0,0,0,0.1),
+        0 0 0 1px rgba(255,255,255,0.5) inset;
       overflow: hidden;
-      border: 1px solid rgba(255,255,255,.8);
-      transform: perspective(1000px) rotateY(-5deg) rotateX(2deg);
-      transition: transform .5s cubic-bezier(.4,0,.2,1);
+      display: flex;
+      flex-direction: column;
+      padding: 1.5rem 1.8rem;
     }
-    .hero-card:hover { transform: perspective(1000px) rotateY(0) rotateX(0); }
 
-    .hero-card::before {
-      content: '';
+    .card-art {
       position: absolute;
-      inset: -2px;
-      background: conic-gradient(from var(--card-angle, 0deg), #667eea, #764ba2, #ec4899, #14b8a6, #667eea);
-      border-radius: var(--radius-lg);
-      z-index: -1;
-      animation: rotateBorder 6s linear infinite;
-      opacity: .6;
+      top: -50px; right: -50px;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, var(--secondary) 0%, transparent 70%);
+      opacity: 0.15;
+      border-radius: 50%;
+      filter: blur(30px);
     }
-    @property --card-angle {
-      syntax: '<angle>';
-      initial-value: 0deg;
-      inherits: false;
-    }
-    @keyframes rotateBorder { to { --card-angle: 360deg; } }
-
-    .hero-card::after {
-      content: '';
+    .card-art-2 {
       position: absolute;
-      inset: 1.5px;
-      background: rgba(255,255,255,.95);
-      border-radius: calc(var(--radius-lg) - 1.5px);
-      z-index: -1;
+      bottom: -30px; left: -30px;
+      width: 150px; height: 150px;
+      background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+      opacity: 0.15;
+      border-radius: 50%;
+      filter: blur(30px);
     }
 
-    .hero-code {
-      font-family: 'Courier New', monospace;
-      font-size: .88rem;
-      color: var(--text-mid);
+    .card-content {
+      position: relative;
+      z-index: 2;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
     }
-    .code-line {
-      margin: .6rem 0;
-      opacity: 0;
-      animation: fadeInUp .5s forwards;
-    }
-    .code-line:nth-child(1) { animation-delay: .1s; }
-    .code-line:nth-child(2) { animation-delay: .25s; }
-    .code-line:nth-child(3) { animation-delay: .4s; }
-    .code-line:nth-child(4) { animation-delay: .55s; }
-    .code-line:nth-child(5) { animation-delay: .7s; }
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
-    .code-keyword { color: #6366f1; font-weight: 700; }
-    .code-string { color: #ec4899; }
-    .code-function { color: #14b8a6; font-weight: 600; }
-
-    .float-card {
-      position: absolute;
-      padding: .6rem 1rem;
-      background: rgba(255,255,255,.85);
-      backdrop-filter: blur(12px);
-      border-radius: var(--radius-sm);
-      box-shadow: var(--shadow-md);
-      border: 1px solid rgba(255,255,255,.9);
-      font-size: .8rem;
-      font-weight: 600;
+    .services-header {
       display: flex;
       align-items: center;
-      gap: .4rem;
-      animation: floatCard 4s ease-in-out infinite;
-      pointer-events: none;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
     }
-    .float-card-1 { top: -15px; right: -20px; color: #6366f1; }
-    .float-card-2 { bottom: -10px; left: -25px; animation-delay: 1.5s; color: #ec4899; }
-    .float-card-3 { bottom: 30px; right: -30px; animation-delay: 3s; color: #14b8a6; }
-    @keyframes floatCard { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    
+    .services-icon-box {
+      width: 32px; height: 32px;
+      background: var(--gradient);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+    
+    .services-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
 
-    .float-dot { width: 8px; height: 8px; border-radius: 50%; }
-    .float-dot-1 { background: rgba(99,102,241,.2); }
-    .float-dot-2 { background: rgba(236,72,153,.2); }
-    .float-dot-3 { background: rgba(20,184,166,.2); }
+    .services-subtitle {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-light);
+      font-weight: 600;
+      margin-bottom: 1.2rem;
+      padding-left: 0.5rem;
+    }
+
+    .services-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      flex-grow: 1;
+      justify-content: center;
+    }
+
+    .service-item {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-mid);
+      transition: transform 0.2s;
+    }
+    
+    .service-item:hover {
+      transform: translateX(5px);
+      color: var(--primary);
+    }
+
+    .service-check {
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .card-footer-visual {
+      margin-top: auto;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(0,0,0,0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .card-status-text {
+      font-size: 0.7rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-muted);
+    }
+
+    .floating-tech {
+      position: absolute;
+      background: #fff;
+      padding: 8px 12px;
+      border-radius: 12px;
+      box-shadow: var(--shadow-md);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-mid);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 5;
+      border: 1px solid var(--border-light);
+    }
+    .tech-1 { top: -20px; left: -30px; animation: float 6s ease-in-out infinite; }
+    .tech-2 { bottom: -10px; right: -20px; animation: float 7s ease-in-out infinite 1s; }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(2deg); }
+    }
 
     /* =============================================
        TECH MARQUEE
@@ -514,6 +638,7 @@
       border-top: 1px solid var(--border-light);
       border-bottom: 1px solid var(--border-light);
       position: relative;
+      width: 100%;
     }
     .tech-marquee::before,
     .tech-marquee::after {
@@ -555,7 +680,12 @@
     /* =============================================
        SECTIONS (shared)
        ============================================= */
-    .section-wrap { max-width: 1200px; margin: 0 auto; padding: 7rem 2rem; }
+    .section-wrap { 
+      max-width: 1200px; 
+      margin: 0 auto; 
+      padding: 7rem 2rem; 
+      width: 100%;
+    }
 
     .section-tag {
       display: inline-flex;
@@ -676,7 +806,7 @@
       gap: .4rem;
       border: 1px solid var(--border-light);
       z-index: 2;
-      animation: floatCard 3s ease-in-out infinite;
+      animation: float 3s ease-in-out infinite;
     }
     .about-badge svg { width: 16px; height: 16px; }
 
@@ -686,6 +816,7 @@
     .skills-bg {
       background: linear-gradient(180deg, var(--bg-soft) 0%, #fff 100%);
       position: relative;
+      width: 100%;
     }
     .skills-bg::before {
       content: '';
@@ -702,6 +833,7 @@
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 1.5rem;
       margin-top: 3rem;
+      width: 100%;
     }
 
     .skill-card {
@@ -781,6 +913,7 @@
       grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
       gap: 2rem;
       margin-top: 3rem;
+      width: 100%;
     }
 
     .project-card {
@@ -849,13 +982,15 @@
     .certs-bg {
       background: linear-gradient(180deg, #fff 0%, var(--bg-soft) 100%);
       position: relative;
+      width: 100%;
     }
 
     .certs-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
       gap: 1.75rem;
       margin-top: 3rem;
+      width: 100%;
     }
 
     .cert-card {
@@ -881,42 +1016,54 @@
     }
     .cert-card:hover::before { transform: scaleX(1); }
 
+    /* === PERBAIKAN: cert-thumb diubah agar sertifikat tampil utuh === */
     .cert-thumb {
       position: relative;
-      height: 200px;
-      background: var(--bg-soft);
+      /* Gunakan aspect-ratio 16/9 yang standar untuk sertifikat */
+      aspect-ratio: 16 / 9;
+      background: #f1f5f9;
       overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
     }
+
     .cert-thumb img {
-      width: 100%; height: 100%;
-      object-fit: cover;
+      width: 100%;
+      height: 100%;
+      /* PERBAIKAN UTAMA: contain bukan cover */
+      object-fit: contain;
+      object-position: center;
       transition: transform .5s cubic-bezier(.4,0,.2,1);
       filter: saturate(.9);
+      border-radius: 4px;
     }
-    .cert-card:hover .cert-thumb img { transform: scale(1.08); filter: saturate(1); }
+    .cert-card:hover .cert-thumb img { transform: scale(1.03); filter: saturate(1); }
 
     .cert-thumb-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,.25));
+      background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,.2));
       opacity: 0;
       transition: opacity .4s;
       z-index: 1;
+      pointer-events: none;
     }
     .cert-card:hover .cert-thumb-overlay { opacity: 1; }
 
     .cert-verify-badge {
       position: absolute;
-      bottom: 12px; right: 12px;
+      bottom: 20px; right: 20px;
       z-index: 2;
       display: flex;
       align-items: center;
       gap: .35rem;
-      padding: .4rem .75rem;
+      padding: .45rem .85rem;
       border-radius: 50px;
       background: rgba(255,255,255,.92);
       backdrop-filter: blur(8px);
-      font-size: .72rem;
+      font-size: .75rem;
       font-weight: 600;
       color: var(--primary);
       box-shadow: var(--shadow-sm);
@@ -929,7 +1076,7 @@
     .cert-verify-badge:hover { background: var(--primary); color: #fff; }
     .cert-verify-badge:hover svg { stroke: #fff; }
     .cert-verify-badge svg {
-      width: 12px; height: 12px;
+      width: 13px; height: 13px;
       stroke: var(--primary);
       fill: none;
       stroke-width: 2;
@@ -939,7 +1086,7 @@
     }
 
     .cert-info { padding: 1.35rem 1.5rem 1.5rem; }
-    .cert-meta { display: flex; align-items: center; gap: .6rem; margin-bottom: .65rem; }
+    .cert-meta { display: flex; align-items: center; gap: .6rem; margin-bottom: .65rem; flex-wrap: wrap; }
 
     .cert-issuer-badge {
       display: inline-flex;
@@ -976,6 +1123,7 @@
       background: linear-gradient(160deg, #fafbff 0%, #f0edff 40%, #fff5fb 100%);
       position: relative;
       overflow: hidden;
+      width: 100%;
     }
     .contact-bg .orb-c {
       position: absolute;
@@ -1010,6 +1158,7 @@
       position: relative;
       z-index: 1;
       align-items: center;
+      width: 100%;
     }
     .contact-big-title {
       font-size: clamp(2rem, 4vw, 3.2rem);
@@ -1192,14 +1341,18 @@
       .about-grid { gap: 3rem; }
       .contact-inner { gap: 3rem; }
       .projects-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
-      .certs-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+      .certs-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
       .skills-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; }
     }
 
     /* =============================================
-       RESPONSIVE — MOBILE LANDSCAPE
+       RESPONSIVE — MOBILE LANDSCAPE (<= 768px)
        ============================================= */
     @media (max-width: 768px) {
+      /* PERBAIKAN 1: Kurangi padding Nav dan Section agar konten lebih 'full' di layar kecil */
+      #mainNav { padding: 1rem 1.25rem !important; }
+      #mainNav.scrolled { padding: .7rem 1.25rem !important; }
+      
       .section-wrap { padding: 5rem 1.25rem; }
       .section-title { font-size: clamp(1.75rem, 5vw, 2.4rem); }
 
@@ -1208,7 +1361,6 @@
       .hero-text p { margin-left: auto; margin-right: auto; }
       .hero-buttons { justify-content: center; }
       .hero-visual { order: 2; }
-      .float-card { display: none; }
 
       .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
       .about-visual { order: -1; }
@@ -1219,12 +1371,13 @@
       .skills-grid { grid-template-columns: 1fr; gap: 1.25rem; }
       .skill-card { padding: 1.5rem; }
 
+      /* PERBAIKAN 2: Grid Project & Cert di Mobile diubah jadi 1 kolom penuh */
       .projects-grid { grid-template-columns: 1fr; gap: 1.5rem; }
       .project-thumb { height: 200px; }
       .project-info { padding: 1.25rem; }
 
       .certs-grid { grid-template-columns: 1fr; gap: 1.5rem; }
-      .cert-thumb { aspect-ratio: 16/10; }
+      .cert-thumb { aspect-ratio: 16 / 9; padding: 10px; }
       .cert-info { padding: 1.15rem 1.25rem; }
 
       .contact-inner { grid-template-columns: 1fr; gap: 2.5rem; }
@@ -1235,10 +1388,13 @@
       .contact-bg .orb-c2 { width: 400px; height: 400px; bottom: -200px; left: -150px; }
 
       footer { padding: 2rem 1.25rem; }
+      
+      /* Sembunyikan elemen mengambang di hero untuk layar portrait agar tidak overflow */
+      .floating-tech { display: none; } 
     }
 
     /* =============================================
-       RESPONSIVE — MOBILE PORTRAIT
+       RESPONSIVE — MOBILE PORTRAIT (<= 480px)
        ============================================= */
     @media (max-width: 480px) {
       .section-wrap { padding: 4rem 1rem; }
@@ -1251,9 +1407,8 @@
       .hero-text p { font-size: 1rem; margin-bottom: 1.5rem; }
       .hero-buttons { flex-direction: column; align-items: stretch; gap: .75rem; }
       .btn { width: 100%; justify-content: center; padding: .8rem 1.5rem; font-size: .9rem; }
-      .hero-card { padding: 1.5rem; }
-      .hero-code { font-size: .8rem; }
-      .code-line { margin: .5rem 0; }
+      
+      .id-card-wrapper { width: 100%; max-width: 300px; height: auto; aspect-ratio: 3/2; }
 
       .tech-marquee { padding: 1.2rem 0; }
       .marquee-item { padding: 0 1.2rem; font-size: .82rem; }
@@ -1286,13 +1441,13 @@
       .project-footer { gap: .4rem; }
 
       .certs-grid { gap: 1.25rem; }
-      .cert-thumb { aspect-ratio: 16/9; border-radius: calc(var(--radius-md) - 1px); }
+      .cert-thumb { aspect-ratio: 16 / 10; padding: 8px; }
       .cert-info { padding: 1rem 1.15rem; }
       .cert-issuer-badge { font-size: .68rem; padding: .18rem .5rem; }
       .cert-issuer-badge svg { width: 10px; height: 10px; }
       .cert-date-badge { font-size: .68rem; }
       .cert-title { font-size: 1rem; }
-      .cert-verify-badge { font-size: .66rem; padding: .3rem .6rem; bottom: 8px; right: 8px; }
+      .cert-verify-badge { font-size: .66rem; padding: .3rem .6rem; bottom: 16px; right: 16px; }
       .cert-verify-badge svg { width: 10px; height: 10px; }
 
       .contact-form { padding: 1.25rem; }
@@ -1308,7 +1463,7 @@
     }
 
     /* =============================================
-       RESPONSIVE — VERY SMALL
+       RESPONSIVE — VERY SMALL (<= 360px)
        ============================================= */
     @media (max-width: 360px) {
       .section-wrap { padding: 3.5rem .85rem; }
@@ -1316,14 +1471,13 @@
       .hero-badge { font-size: .74rem; }
       .hero-text h1 { font-size: 2rem; }
       .hero-text p { font-size: .9rem; }
-      .hero-card { padding: 1.25rem; }
-      .hero-code { font-size: .74rem; }
+      .id-card-wrapper { width: 260px; height: 180px; }
       .avatar-box { width: 160px; height: 160px; }
       .skill-card { padding: 1.1rem; }
       .skill-name { font-size: 1rem; }
       .project-thumb { height: 160px; }
       .project-title { font-size: 1rem; }
-      .cert-thumb { aspect-ratio: 16/9; }
+      .cert-thumb { aspect-ratio: 16 / 10; padding: 6px; }
       .cert-title { font-size: .95rem; }
       .contact-socials a { padding: .5rem .9rem; font-size: .78rem; }
     }
@@ -1337,10 +1491,8 @@
       .hero-text h1 { font-size: 2rem; }
       .hero-text p { display: none; }
       .hero-buttons { gap: .5rem; }
-      .hero-card { padding: 1rem; }
-      .hero-code { font-size: .75rem; }
-      .code-line { margin: .4rem 0; }
-      .float-card { display: none; }
+      .id-card-wrapper { width: 240px; height: 160px; }
+      .floating-tech { display: none; }
     }
   </style>
 </head>
@@ -1353,7 +1505,7 @@
   <!-- Navigation -->
   <nav id="mainNav">
     <div class="nav-container">
-      <a href="#home" class="logo">{{ $settings['name'] ?? 'Falah' }}</a>
+      <a href="#home" class="logo">{{ $settings['name'] ?? 'Mostfal.dev' }}</a>
       <div class="nav-links">
         <a href="#about" data-section="about">About</a>
         <a href="#projects" data-section="projects">Projects</a>
@@ -1369,14 +1521,31 @@
 
   <!-- Mobile Menu -->
   <div class="mobile-menu" id="mobileMenu">
-    <a href="#home" class="mobile-link">Home</a>
-    <a href="#about" class="mobile-link">About</a>
-    <a href="#projects" class="mobile-link">Projects</a>
-    <a href="#certificates" class="mobile-link">Certificates</a>
-    <a href="#skills" class="mobile-link">Skills</a>
-    <a href="#contact" class="mobile-link">Contact</a>
+    <a href="#home" class="mobile-link">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Home
+    </a>
+    <a href="#about" class="mobile-link">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      About
+    </a>
+    <a href="#projects" class="mobile-link">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+      Projects
+    </a>
+    <a href="#certificates" class="mobile-link">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Certificates
+    </a>
+    <a href="#skills" class="mobile-link">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Skills
+    </a>
+    <a href="#contact" class="mobile-link">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      Contact
+    </a>
   </div>
-
   <!-- Flash Messages -->
   @if(session('success'))
     <div class="flash success">{{ session('success') }}</div>
@@ -1415,18 +1584,48 @@
           </a>
         </div>
       </div>
+      
       <div class="hero-visual reveal" style="transition-delay:.2s">
-        <div class="float-card float-card-1"><span class="float-dot float-dot-1"></span>React.js</div>
-        <div class="float-card float-card-2"><span class="float-dot float-dot-2"></span>Clean Code</div>
-        <div class="float-card float-card-3"><span class="float-dot float-dot-3"></span>UI/UX</div>
-        <div class="hero-card">
-          <div class="hero-code">
-            <div class="code-line"><span class="code-keyword">const</span> <span class="code-function">developer</span> = {</div>
-            <div class="code-line">&nbsp;&nbsp;<span class="code-string">name</span>: <span class="code-string">"{{ $settings['name'] ?? 'Ahmad Badrul Falah' }}"</span>,</div>
-            <div class="code-line">&nbsp;&nbsp;<span class="code-string">role</span>: <span class="code-string">"{{ $settings['role'] ?? 'Frontend Developer' }}"</span>,</div>
-            <div class="code-line">&nbsp;&nbsp;<span class="code-string">passion</span>: <span class="code-string">"{{ $settings['passion'] ?? 'Beautiful Code' }}"</span></div>
-            <div class="code-line">};</div>
-          </div>
+        <div class="id-card-wrapper">
+            <div class="id-card">
+                <div class="card-art"></div>
+                <div class="card-art-2"></div>
+                <div class="card-content">
+                    <div class="services-header">
+                        <div class="services-icon-box">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                        </div>
+                        <div class="services-title">{{ $settings['hero_card_title'] ?? 'Services' }}</div>
+                    </div>
+                    <div class="services-subtitle">{{ $settings['hero_card_subtitle'] ?? 'Our Services' }}</div>
+                    @php
+                        $items = explode(',', $settings['hero_card_items'] ?? 'Web Development, User Interface Design, Mobile Development');
+                    @endphp
+                    <div class="services-list">
+                        @foreach($items as $item)
+                            @if(trim($item))
+                            <div class="service-item">
+                                <span class="service-check">✓</span>
+                                {{ trim($item) }}
+                            </div>
+                            @endif
+                        @endforeach
+                    </div>
+                    <div class="card-footer-visual">
+                        <div class="card-status-text">MOSTFAL.DEV</div>
+                        <div class="card-status-text" style="opacity:0.5">ID: 884-X</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="floating-tech tech-1">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+            Web
+        </div>
+        <div class="floating-tech tech-2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+            Dev
         </div>
       </div>
     </div>
@@ -1485,8 +1684,13 @@
           </a>
         </div>
         <div class="about-badge">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-          Open to Collaborate
+<a href="{{ route('download.cv') }}" 
+   class="about-cv-btn" 
+   target="_blank"
+   title="Download My CV">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    Download CV
+</a>
         </div>
         <div class="corner-deco tl"></div>
         <div class="corner-deco tr"></div>
@@ -1650,12 +1854,6 @@
                 LinkedIn
               </a>
             @endif
-            @if(!empty($settings['twitter']))
-              <a href="{{ $settings['twitter'] }}" target="_blank">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                Twitter
-              </a>
-            @endif
           </div>
         </div>
         <div class="contact-right reveal" style="transition-delay:.2s">
@@ -1663,12 +1861,12 @@
             @csrf
             <div class="form-group">
               <label>Nama</label>
-              <input type="text" name="nama" placeholder="John Doe" required value="{{ old('nama') }}">
+              <input type="text" name="nama" placeholder="Your name" required value="{{ old('nama') }}">
               @error('nama')<span style="font-size:12px;color:#ef4444">{{ $message }}</span>@enderror
             </div>
             <div class="form-group">
               <label>Email</label>
-              <input type="email" name="email" placeholder="john@example.com" required value="{{ old('email') }}">
+              <input type="email" name="email" placeholder="Example@Gmail.com" required value="{{ old('email') }}">
               @error('email')<span style="font-size:12px;color:#ef4444">{{ $message }}</span>@enderror
             </div>
             <div class="form-group">
@@ -1688,7 +1886,7 @@
 
   <!-- ======================== FOOTER ======================== -->
   <footer>
-    <p>&copy; {{ date('Y') }} {{ $settings['name'] ?? 'Ahmad Badrul Falah' }} — {{ $settings['role'] ?? 'Frontend Developer' }}</p>
+    <p>&copy; {{ date('Y') }} Mostfal.dev — {{ $settings['role'] ?? 'Frontend Developer' }}</p>
     <div class="social-links">
       @if(!empty($settings['github']))
         <a href="{{ $settings['github'] }}" target="_blank">
@@ -1707,77 +1905,49 @@
 
   <!-- ======================== SCRIPTS ======================== -->
   <script>
-    /* ── Custom Cursor ── */
     (function() {
-      const cursor = document.getElementById('cursor');
-      const ring = document.getElementById('cursorRing');
+      var cursor = document.getElementById('cursor');
+      var ring = document.getElementById('cursorRing');
       if (!cursor || !ring) return;
-
-      let mx = 0, my = 0, rx = 0, ry = 0;
-
+      var mx = 0, my = 0, rx = 0, ry = 0;
       document.addEventListener('mousemove', function(e) {
-        mx = e.clientX;
-        my = e.clientY;
-        cursor.style.left = mx + 'px';
-        cursor.style.top = my + 'px';
+        mx = e.clientX; my = e.clientY;
+        cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
       });
-
       (function animate() {
-        rx += (mx - rx) * .1;
-        ry += (my - ry) * .1;
-        ring.style.left = rx + 'px';
-        ring.style.top = ry + 'px';
+        rx += (mx - rx) * .1; ry += (my - ry) * .1;
+        ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
         requestAnimationFrame(animate);
       })();
-
-      document.querySelectorAll('a, button, .skill-card, .project-card, .cert-card, .avatar-box, input, textarea')
+      document.querySelectorAll('a, button, .skill-card, .project-card, .cert-card, .avatar-box, .id-card-wrapper, input, textarea')
         .forEach(function(el) {
-          el.addEventListener('mouseenter', function() {
-            cursor.classList.add('hover');
-            ring.classList.add('hover');
-          });
-          el.addEventListener('mouseleave', function() {
-            cursor.classList.remove('hover');
-            ring.classList.remove('hover');
-          });
+          el.addEventListener('mouseenter', function() { cursor.classList.add('hover'); ring.classList.add('hover'); });
+          el.addEventListener('mouseleave', function() { cursor.classList.remove('hover'); ring.classList.remove('hover'); });
         });
     })();
 
-    /* ── Mobile Menu ── */
     (function() {
       var btn = document.getElementById('hamburgerBtn');
       var menu = document.getElementById('mobileMenu');
       if (!btn || !menu) return;
-
       btn.addEventListener('click', function() {
-        btn.classList.toggle('active');
-        menu.classList.toggle('open');
+        btn.classList.toggle('active'); menu.classList.toggle('open');
         document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
       });
-
       document.querySelectorAll('.mobile-link').forEach(function(link) {
-        link.addEventListener('click', function() {
-          btn.classList.remove('active');
-          menu.classList.remove('open');
-          document.body.style.overflow = '';
-        });
+        link.addEventListener('click', function() { btn.classList.remove('active'); menu.classList.remove('open'); document.body.style.overflow = ''; });
       });
     })();
 
-    /* ── Nav Scroll Effect ── */
     (function() {
       var nav = document.getElementById('mainNav');
       if (!nav) return;
-      window.addEventListener('scroll', function() {
-        nav.classList.toggle('scrolled', window.scrollY > 60);
-      }, { passive: true });
+      window.addEventListener('scroll', function() { nav.classList.toggle('scrolled', window.scrollY > 60); }, { passive: true });
     })();
 
-    /* ── Active Nav on Scroll ── */
     (function() {
       var links = document.querySelectorAll('.nav-links a[data-section]');
       if (!links.length) return;
-
       var observer = new IntersectionObserver(function(entries) {
         entries.forEach(function(entry) {
           if (entry.isIntersecting) {
@@ -1787,78 +1957,57 @@
           }
         });
       }, { rootMargin: '-30% 0px -60% 0px' });
-
-      document.querySelectorAll('section[id], div[id]').forEach(function(s) {
-        observer.observe(s);
-      });
+      document.querySelectorAll('section[id], div[id]').forEach(function(s) { observer.observe(s); });
     })();
 
-    /* ── Reveal on Scroll ── */
     (function() {
       var observer = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-          if (entry.isIntersecting) entry.target.classList.add('visible');
-        });
+        entries.forEach(function(entry) { if (entry.isIntersecting) entry.target.classList.add('visible'); });
       }, { threshold: .06 });
-
-      document.querySelectorAll('.reveal').forEach(function(el) {
-        observer.observe(el);
-      });
+      document.querySelectorAll('.reveal').forEach(function(el) { observer.observe(el); });
     })();
 
-    /* ── Flash Messages Auto-dismiss ── */
     document.querySelectorAll('.flash').forEach(function(el) {
-      setTimeout(function() {
-        el.style.opacity = '0';
-        el.style.transition = 'opacity .3s';
-        setTimeout(function() { el.remove(); }, 300);
-      }, 3500);
+      setTimeout(function() { el.style.opacity = '0'; el.style.transition = 'opacity .3s'; setTimeout(function() { el.remove(); }, 300); }, 3500);
     });
 
-    /* ── Smooth Scroll ── */
     document.querySelectorAll('a[href^="#"]').forEach(function(a) {
-      a.addEventListener('click', function(e) {
-        e.preventDefault();
-        var target = document.querySelector(this.getAttribute('href'));
-        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
+      a.addEventListener('click', function(e) { e.preventDefault(); var t = document.querySelector(this.getAttribute('href')); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
     });
 
-    /* ── 3D Tilt on Project Cards ── */
     document.querySelectorAll('.project-card').forEach(function(card) {
       card.addEventListener('mousemove', function(e) {
-        var r = this.getBoundingClientRect();
-        var x = e.clientX - r.left;
-        var y = e.clientY - r.top;
-        var cx = r.width / 2;
-        var cy = r.height / 2;
+        var r = this.getBoundingClientRect(); var x = e.clientX - r.left; var y = e.clientY - r.top;
+        var cx = r.width / 2; var cy = r.height / 2;
         this.style.transform = 'perspective(800px) rotateX(' + (y - cy) / 12 + 'deg) rotateY(' + (cx - x) / 12 + 'deg) translateZ(8px)';
       });
-      card.addEventListener('mouseleave', function() {
-        this.style.transform = 'perspective(800px) rotateX(0) rotateY(0) translateZ(0)';
-      });
+      card.addEventListener('mouseleave', function() { this.style.transform = 'perspective(800px) rotateX(0) rotateY(0) translateZ(0)'; });
     });
 
-    /* ── 3D Tilt on Cert Cards ── */
     document.querySelectorAll('.cert-card').forEach(function(card) {
       card.addEventListener('mousemove', function(e) {
-        var r = this.getBoundingClientRect();
-        var x = e.clientX - r.left;
-        var y = e.clientY - r.top;
-        var cx = r.width / 2;
-        var cy = r.height / 2;
+        var r = this.getBoundingClientRect(); var x = e.clientX - r.left; var y = e.clientY - r.top;
+        var cx = r.width / 2; var cy = r.height / 2;
         this.style.transform = 'translateY(-8px) perspective(800px) rotateX(' + (y - cy) / 14 + 'deg) rotateY(' + (cx - x) / 14 + 'deg)';
       });
-      card.addEventListener('mouseleave', function() {
-        this.style.transform = '';
-      });
+      card.addEventListener('mouseleave', function() { this.style.transform = ''; });
     });
+    
+    (function() {
+      var card = document.querySelector('.id-card-wrapper');
+      if(!card) return;
+      card.addEventListener('mousemove', function(e) {
+        var r = card.getBoundingClientRect(); var x = e.clientX - r.left; var y = e.clientY - r.top;
+        var cx = r.width / 2; var cy = r.height / 2;
+        var dx = (cx - x) / 20; var dy = (cy - y) / 20;
+        card.style.transform = 'rotateY(' + dx + 'deg) rotateX(' + (-dy) + 'deg) translateZ(10px)';
+      });
+      card.addEventListener('mouseleave', function() { card.style.transform = 'rotateY(-10deg) rotateX(5deg)'; });
+    })();
 
-    /* ── Contact Form Submit Feedback ── */
     (function() {
       var form = document.querySelector('.contact-form');
       if (!form) return;
-
       form.addEventListener('submit', function() {
         var btn = this.querySelector('.btn-send');
         btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg> Sending...';
@@ -1866,57 +2015,34 @@
       });
     })();
 
-    /* ── Spin Keyframe (injected) ── */
-    (function() {
-      var s = document.createElement('style');
-      s.textContent = '@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }';
-      document.head.appendChild(s);
-    })();
+    (function() { var s = document.createElement('style'); s.textContent = '@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }'; document.head.appendChild(s); })();
 
-    /* ── Typing Effect ── */
     (function() {
       var el = document.getElementById('typingName');
       if (!el) return;
-
       var name = "{{ $settings['name'] ?? 'Ahmad Badrul Falah' }}";
-      var i = 0;
-      var deleting = false;
-
+      var i = 0, deleting = false;
       function loop() {
         if (!deleting) {
           el.textContent = name.substring(0, ++i);
-          if (i === name.length) {
-            setTimeout(function() { deleting = true; loop(); }, 2500);
-            return;
-          }
+          if (i === name.length) { setTimeout(function() { deleting = true; loop(); }, 2500); return; }
           setTimeout(loop, 80);
         } else {
           el.textContent = name.substring(0, --i);
-          if (i === 0) {
-            deleting = false;
-            setTimeout(loop, 500);
-            return;
-          }
+          if (i === 0) { deleting = false; setTimeout(loop, 500); return; }
           setTimeout(loop, 40);
         }
       }
-
       setTimeout(loop, 800);
     })();
 
-    /* ── Hero Orbs Parallax ── */
     (function() {
       var orbs = document.querySelectorAll('.hero-orb');
       if (!orbs.length || window.innerWidth <= 768) return;
-
       document.addEventListener('mousemove', function(e) {
         var x = (e.clientX / window.innerWidth - .5) * 2;
         var y = (e.clientY / window.innerHeight - .5) * 2;
-
-        orbs.forEach(function(orb, i) {
-          var speed = (i + 1) * 12;
-          orb.style.transform = 'translate(' + (x * speed) + 'px, ' + (y * speed) + 'px)';
-        });
+        orbs.forEach(function(orb, i) { var speed = (i + 1) * 12; orb.style.transform = 'translate(' + (x * speed) + 'px, ' + (y * speed) + 'px)'; });
       });
     })();
   </script>

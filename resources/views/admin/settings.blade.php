@@ -179,31 +179,6 @@
   .f-hint { font-size: .72rem; color: var(--text-3); margin-top: .4rem; }
   .f-divider { border: none; border-top: 1px solid var(--border); margin: 1.75rem 0 1.5rem; }
 
-  /* ── Code Preview ── */
-  .code-box {
-    margin-top: 1.25rem; background: #18181b; border-radius: var(--radius-sm);
-    font-family: 'JetBrains Mono', monospace; font-size: .78rem;
-    color: #d4d4d8; line-height: 1.75; overflow: hidden;
-    border: 1px solid #27272a;
-  }
-  .code-bar {
-    display: flex; align-items: center; gap: 6px;
-    padding: 10px 14px; border-bottom: 1px solid #27272a;
-  }
-  .code-dot { width: 10px; height: 10px; border-radius: 50%; }
-  .code-dot.r { background: #ef4444; }
-  .code-dot.y { background: #eab308; }
-  .code-dot.g { background: #22c55e; }
-  .code-file { margin-left: auto; font-size: .65rem; color: #52525b; }
-  .code-body { padding: 14px 16px; display: flex; }
-  .code-lines { color: #3f3f46; user-select: none; text-align: right; padding-right: 16px; border-right: 1px solid #27272a; margin-right: 16px; line-height: 1.75; }
-  .code-content { flex: 1; overflow-x: auto; white-space: pre; }
-  .ck { color: #c084fc; }
-  .cf { color: #60a5fa; }
-  .cs { color: #34d399; }
-  .cd { color: #fbbf24; font-style: italic; }
-  .cb { color: #52525b; }
-
   /* ── Upload ── */
   .upload-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
   .upload-box {
@@ -377,8 +352,6 @@
   @media(max-width:480px) {
     .s-card-body { padding: 1.25rem; }
     .s-card-head { padding: 1rem 1.25rem; }
-    .code-lines { display: none; }
-    .code-body { padding: 12px; }
     .ph-name-display, .ph-name-input { max-width: 160px; }
   }
 
@@ -403,7 +376,7 @@
         </div>
         <div class="ph-text">
           <h1>Pengaturan Website</h1>
-          <p class="ph-sub">Kelola identitas dan tampilan portofolio</p>
+          <p class="ph-sub">Kelola konten utama dan tampilan</p>
           <div class="ph-name">
             <svg class="ph-name-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             <span class="ph-name-display" id="headerNameDisplay" title="Klik untuk edit nama">
@@ -429,15 +402,16 @@
         </div>
         <div class="sch-text">
           <h2>Identitas & Hero</h2>
-          <p>Informasi utama di header dan hero section</p>
+          <p>Nama, Judul Halaman, dan Deskripsi Utama</p>
         </div>
       </div>
       <div class="s-card-body">
+        
         <div class="f-row">
           <div class="f-group">
             <label class="f-label">Nama Lengkap <span class="req">*</span></label>
             <input type="text" name="name" class="f-input" id="nameInput" value="{{ $settings['name'] ?? '' }}" placeholder="Ahmad Badrul Falah">
-            <div class="f-hint">Muncul di Logo Header, Hero, & Footer</div>
+            <div class="f-hint">Muncul di Header & Hero</div>
           </div>
           <div class="f-group">
             <label class="f-label">Judul Tab Browser</label>
@@ -447,49 +421,48 @@
             </div>
           </div>
         </div>
-        <div class="f-row" style="margin-top:1.25rem">
-          <div class="f-group">
-            <label class="f-label">Role / Pekerjaan</label>
-            <input type="text" name="role" class="f-input" value="{{ $settings['role'] ?? '' }}" placeholder="Frontend Developer">
-          </div>
-          <div class="f-group">
-            <label class="f-label">Passion / Tagline</label>
-            <input type="text" name="passion" class="f-input" value="{{ $settings['passion'] ?? '' }}" placeholder="Beautiful Code">
-          </div>
-        </div>
-        <div class="f-row" style="margin-top:1.25rem">
-          <div class="f-group">
-            <label class="f-label">Status Hero (Badge)</label>
-            <input type="text" name="hero_badge" class="f-input" value="{{ $settings['hero_badge'] ?? 'Available for work' }}" placeholder="Available for work">
-          </div>
-          <div class="f-group"></div>
-        </div>
-
-        <div class="code-box">
-          <div class="code-bar">
-            <div class="code-dot r"></div><div class="code-dot y"></div><div class="code-dot g"></div>
-            <span class="code-file">developer.ts</span>
-          </div>
-          <div class="code-body">
-            <div class="code-lines">1<br>2<br>3<br>4<br>5<br>6</div>
-            <div class="code-content"><span class="ck">const</span> <span class="cf">developer</span><span class="cb">:</span> <span class="cf">Profile</span> <span class="cb">=</span> <span class="cb">{</span>
-  <span class="cs">name</span><span class="cb">:</span> <span class="cs">"<span class="cd" id="pvName">{{ $settings['name'] ?? 'Ahmad Badrul Falah' }}</span>"</span><span class="cb">,</span>
-  <span class="cs">role</span><span class="cb">:</span> <span class="cs">"<span class="cd" id="pvRole">{{ $settings['role'] ?? 'Frontend Developer' }}</span>"</span><span class="cb">,</span>
-  <span class="cs">passion</span><span class="cb">:</span> <span class="cs">"<span class="cd" id="pvPassion">{{ $settings['passion'] ?? 'Beautiful Code' }}</span>"</span><span class="cb">,</span>
-  <span class="cs">status</span><span class="cb">:</span> <span class="cs">"<span class="cd" id="pvBadge">{{ $settings['hero_badge'] ?? 'Available for work' }}</span>"</span>
-<span class="cb">}</span></div>
-          </div>
-        </div>
 
         <hr class="f-divider">
+
         <div class="f-full">
-          <label class="f-label">Deskripsi Hero</label>
-          <textarea name="hero_desc" class="f-input f-textarea" rows="3" placeholder="Deskripsi singkat di bawah nama...">{{ $settings['hero_desc'] ?? '' }}</textarea>
+            <label class="f-label">Deskripsi Hero</label>
+            <textarea name="hero_desc" class="f-input f-textarea" rows="3" placeholder="Deskripsi singkat di bawah nama...">{{ $settings['hero_desc'] ?? '' }}</textarea>
         </div>
         <div class="f-full" style="margin-top:1.25rem">
-          <label class="f-label">Deskripsi Kontak</label>
-          <textarea name="contact_desc" class="f-input f-textarea" rows="3" placeholder="Teks ajakan di section kontak...">{{ $settings['contact_desc'] ?? '' }}</textarea>
+            <label class="f-label">Deskripsi Kontak</label>
+            <textarea name="contact_desc" class="f-input f-textarea" rows="3" placeholder="Teks ajakan di section kontak...">{{ $settings['contact_desc'] ?? '' }}</textarea>
         </div>
+
+        <!-- ========================================== -->
+        <!-- SECTION: HERO VISUAL SERVICES CARD -->
+        <!-- ========================================== -->
+        <hr class="f-divider">
+
+        <div class="f-full">
+            <label class="f-label" style="color:var(--primary); font-weight:700; margin-bottom:0.5rem; display:block; border-bottom:1px solid var(--border); padding-bottom:0.5rem; margin-top: 1rem;">Hero Visual (Services Card)</label>
+            <div class="f-hint" style="margin-top:0">Pengaturan tampilan kartu layanan di sisi kanan Hero.</div>
+        </div>
+
+        <div class="f-row" style="margin-top: 1.25rem;">
+          <div class="f-group">
+            <label class="f-label">Judul Kartu</label>
+            <input type="text" name="hero_card_title" class="f-input" value="{{ $settings['hero_card_title'] ?? 'Services' }}" placeholder="Contoh: Services">
+            <div class="f-hint">Teks besar di kiri atas kartu</div>
+          </div>
+          <div class="f-group">
+            <label class="f-label">Sub Judul Kartu</label>
+            <input type="text" name="hero_card_subtitle" class="f-input" value="{{ $settings['hero_card_subtitle'] ?? 'Our Services' }}" placeholder="Contoh: Our Services">
+            <div class="f-hint">Teks kecil (uppercase) di bawah judul</div>
+          </div>
+        </div>
+
+        <div class="f-full" style="margin-top: 1.25rem;">
+          <label class="f-label">Daftar Layanan</label>
+          <textarea name="hero_card_items" class="f-input f-textarea" rows="2" placeholder="Web Development, UI Design, Mobile Development">{{ $settings['hero_card_items'] ?? 'Web Development, User Interface Design, Mobile Development' }}</textarea>
+          <div class="f-hint">Pisahkan setiap layanan dengan tanda koma (,).</div>
+        </div>
+        <!-- ========================================== -->
+
       </div>
     </div>
 
@@ -655,7 +628,6 @@
   const nameDisplay = document.getElementById('headerNameDisplay');
   const nameInputHeader = document.getElementById('headerNameInput');
   const nameInputForm = document.getElementById('nameInput');
-  const pvName = document.getElementById('pvName');
   const defaultName = '{{ $settings["name"] ?? "Ahmad Badrul Falah" }}';
 
   function setName(val) {
@@ -664,8 +636,6 @@
     nameDisplay.childNodes[0].textContent = v;
     // Sync ke input form bawah
     nameInputForm.value = val;
-    // Sync ke code preview
-    pvName.textContent = v;
     // Sync ke input header (supaya kalau edit dari bawah, header juga update)
     nameInputHeader.value = val;
     calcComp();
@@ -694,25 +664,27 @@
     }
   });
 
-  // ── Input form bawah juga sync ke header & preview ──
+  // ── Input form bawah juga sync ke header ──
   nameInputForm.addEventListener('input', () => {
     const v = nameInputForm.value.trim() || defaultName;
     nameDisplay.childNodes[0].textContent = v;
     nameInputHeader.value = nameInputForm.value;
-    pvName.textContent = v;
     calcComp();
   });
 
-  // ── Completeness ──
+  // ── Completeness (Diperbarui: Role, Passion, Badge dihapus) ──
   function calcComp(){
     const f=[
       nameInputForm?.value?.trim(),
       document.querySelector('input[name="title"]')?.value?.trim(),
-      document.querySelector('input[name="role"]')?.value?.trim(),
-      document.querySelector('input[name="passion"]')?.value?.trim(),
-      document.querySelector('input[name="hero_badge"]')?.value?.trim(),
+      // role, passion, hero_badge dihapus di sini
       document.querySelector('textarea[name="hero_desc"]')?.value?.trim(),
       document.querySelector('textarea[name="contact_desc"]')?.value?.trim(),
+      // Hero Visual Card fields
+      document.querySelector('input[name="hero_card_title"]')?.value?.trim(),
+      document.querySelector('input[name="hero_card_subtitle"]')?.value?.trim(),
+      document.querySelector('textarea[name="hero_card_items"]')?.value?.trim(),
+      // End NEW
       document.querySelector('input[name="whatsapp"]')?.value?.trim(),
       document.querySelector('input[name="wa_message"]')?.value?.trim(),
       document.querySelector('input[name="avatar_link"]')?.value?.trim(),
@@ -731,11 +703,6 @@
 
   // ── Char count ──
   function updateCharCount(el,id){const c=document.getElementById(id);if(c)c.textContent=el.value.length+'/'+el.maxLength;}
-
-  // ── Live code preview ──
-  const pvMap={pvRole:document.querySelector('input[name="role"]'),pvPassion:document.querySelector('input[name="passion"]'),pvBadge:document.querySelector('input[name="hero_badge"]')};
-  const pvDef={pvRole:'Frontend Developer',pvPassion:'Beautiful Code',pvBadge:'Available for work'};
-  Object.entries(pvMap).forEach(([id,inp])=>{if(inp)inp.addEventListener('input',()=>{const el=document.getElementById(id);if(el)el.textContent=inp.value||pvDef[id];});});
 
   // ── Drag & drop ──
   function dragOn(e,id){e.preventDefault();document.getElementById(id).classList.add('drag-over');}

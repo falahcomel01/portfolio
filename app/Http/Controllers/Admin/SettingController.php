@@ -20,10 +20,18 @@ class SettingController extends Controller
     {
         // 1. DAFTAR SEMUA FIELD TEKS
         // Pastikan semua key ini ada di form input name="..."
+        // NOTE: Saya menambahkan 3 field baru di paling bawah (hero_card...)
+        // Saya menghapus role, passion, hero_badge, dribbble karena sudah tidak ada di form.
         $fields = [
-            'name', 'title', 'role', 'passion', 'hero_badge', 
-            'hero_desc', 'contact_desc', 'whatsapp', 'wa_message', 
-            'avatar_link', 'github', 'linkedin', 'twitter', 'dribbble'
+            'name', 'title', 
+            'hero_desc', 'contact_desc', 
+            'whatsapp', 'wa_message', 'avatar_link', 
+            'github', 'linkedin', 'twitter',
+            
+            // === FIELD BARU UNTUK HERO VISUAL CARD ===
+            'hero_card_title', 
+            'hero_card_subtitle', 
+            'hero_card_items'
         ];
 
         foreach ($fields as $field) {
