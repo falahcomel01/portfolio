@@ -116,15 +116,15 @@
       position: fixed;
       top: 0;
       width: 100%;
-      padding: 1rem 2rem;
+      padding: .6rem 2rem;
       background: rgba(255,255,255,.6);
       backdrop-filter: blur(24px) saturate(1.5);
-      z-index: 1002; /* <--- UBAH DARI 1000 JADI 1002 */
+      z-index: 1002;
       transition: all .4s cubic-bezier(.4,0,.2,1);
       border-bottom: 1px solid transparent;
     }
     #mainNav.scrolled {
-      padding: .7rem 2rem;
+      padding: .45rem 2rem;
       background: rgba(255,255,255,.85);
       box-shadow: var(--shadow-sm);
       border-bottom-color: var(--border-light);
@@ -297,116 +297,168 @@
     }
 
     /* =============================================
-       HERO
+       HERO — CINEMATIC PREMIUM UPGRADE
        ============================================= */
     .hero {
       min-height: 100vh;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 7rem 2rem 4rem;
+      align-items: stretch;
       position: relative;
       overflow: hidden;
-      background: linear-gradient(160deg, #fafbff 0%, #f0f0ff 30%, #fff5fb 60%, #fafbff 100%);
+      /* Rich gradient background — tidak flat lagi */
+      background: linear-gradient(135deg, #f0eeff 0%, #e8e4f8 35%, #dce8f8 70%, #eaf4ff 100%);
+      padding: 0;
     }
 
-    .hero-orb {
+    /* Subtle ambient light top-left */
+    .hero::before {
+      content: '';
       position: absolute;
-      border-radius: 50%;
-      filter: blur(80px);
-      opacity: .5;
+      top: -20%; left: -10%;
+      width: 70vw; height: 70vh;
+      background: radial-gradient(ellipse, rgba(99,102,241,.12) 0%, transparent 70%);
       pointer-events: none;
+      z-index: 0;
     }
-    .hero-orb-1 {
-      width: 500px; height: 500px;
-      top: -15%; right: -10%;
-      background: radial-gradient(circle, rgba(99,102,241,.15), transparent 70%);
-      animation: orbFloat1 18s ease-in-out infinite;
-    }
-    .hero-orb-2 {
-      width: 400px; height: 400px;
-      bottom: -10%; left: -5%;
-      background: radial-gradient(circle, rgba(236,72,153,.1), transparent 70%);
-      animation: orbFloat2 22s ease-in-out infinite;
-    }
-    .hero-orb-3 {
-      width: 300px; height: 300px;
-      top: 40%; left: 50%;
-      background: radial-gradient(circle, rgba(20,184,166,.08), transparent 70%);
-      animation: orbFloat3 15s ease-in-out infinite;
-    }
+
+    .hero-orb { display: none; }
+    .hero-dots { display: none; }
+
     @keyframes orbFloat1 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-40px,30px); } }
     @keyframes orbFloat2 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(30px,-40px); } }
     @keyframes orbFloat3 { 0%,100% { transform: translate(0,0); } 33% { transform: translate(-20px,-30px); } 66% { transform: translate(25px,15px); } }
 
-    .hero-dots {
-      position: absolute;
-      inset: 0;
-      background-image: radial-gradient(circle, rgba(99,102,241,.08) 1px, transparent 1px);
-      background-size: 40px 40px;
-      opacity: .6;
-      pointer-events: none;
-    }
-
     .hero-content {
-      max-width: 1200px;
       width: 100%;
-      margin: 0 auto;
+      max-width: 100%;
+      margin: 0;
       display: grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap: 4rem;
-      align-items: center;
+      grid-template-columns: 1fr 1.1fr;
+      align-items: stretch;
       position: relative;
       z-index: 1;
+      min-height: 100vh;
     }
 
+    /* ── Badge ── */
     .hero-badge {
       display: inline-flex;
       align-items: center;
-      gap: .5rem;
-      padding: .4rem 1rem;
-      background: rgba(99,102,241,.08);
-      border: 1px solid rgba(99,102,241,.15);
+      gap: .45rem;
+      padding: .35rem .9rem;
+      background: rgba(255,255,255,.7);
+      border: 1px solid rgba(99,102,241,.18);
       border-radius: 50px;
-      font-size: .85rem;
+      font-size: .78rem;
       font-weight: 600;
       color: var(--primary);
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.2rem;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 2px 12px rgba(99,102,241,.08);
+      width: fit-content;
     }
     .hero-badge-dot {
-      width: 8px; height: 8px;
-      background: var(--accent);
+      width: 6px; height: 6px;
+      background: #22c55e;
       border-radius: 50%;
+      box-shadow: 0 0 0 3px rgba(34,197,94,.2);
       animation: pulse 2s ease-in-out infinite;
     }
-    @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .5; transform: scale(.8); } }
+    @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .6; transform: scale(.8); } }
+
+    /* ── Left Text Panel ── */
+    .hero-text {
+      padding: 7rem 4% 3rem 7%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* Eyebrow line above h1 */
+    .hero-eyebrow {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: .5rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      width: 22px; height: 2px;
+      background: var(--gradient);
+      border-radius: 2px;
+      display: inline-block;
+    }
 
     .hero-text h1 {
-      font-size: clamp(2.5rem, 5vw, 3.8rem);
+      font-size: clamp(2rem, 3vw, 3rem);
       font-weight: 900;
-      line-height: 1.05;
-      margin-bottom: 1.5rem;
-      letter-spacing: -.03em;
+      line-height: 1.0;
+      margin-bottom: .3rem;
+      letter-spacing: -.04em;
+      color: var(--text);
+    }
+    .hero-hi {
+      display: block;
+      font-size: clamp(1rem, 1.5vw, 1.4rem);
+      font-weight: 400;
+      color: var(--text-light);
+      letter-spacing: -.01em;
+      margin-bottom: .15rem;
     }
     .hero-text h1 .typed-name {
-      background: var(--gradient);
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      border-right: 3px solid var(--primary);
+      background-clip: text;
       padding-right: 4px;
-      animation: blink 1s step-end infinite;
     }
-    @keyframes blink { 0%,100% { border-color: var(--primary); } 50% { border-color: transparent; } }
+
+    /* Role tag under name */
+    .hero-role-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      margin-top: .7rem;
+      margin-bottom: 1rem;
+      font-size: .82rem;
+      font-weight: 600;
+      color: var(--text-mid);
+      padding: .3rem .8rem .3rem .4rem;
+      background: rgba(99,102,241,.06);
+      border-radius: 50px;
+      width: fit-content;
+    }
+    .hero-role-icon {
+      width: 22px; height: 22px;
+      background: var(--gradient);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
     .hero-text p {
-      font-size: 1.15rem;
+      font-size: .95rem;
       color: var(--text-light);
-      margin-bottom: 2rem;
+      margin-bottom: 1.6rem;
       line-height: 1.8;
-      max-width: 500px;
+      max-width: 380px;
     }
 
-    .hero-buttons { display: flex; gap: 1rem; flex-wrap: wrap; }
+    /* Divider before buttons */
+    .hero-divider {
+      width: 32px; height: 2px;
+      background: var(--gradient);
+      border-radius: 2px;
+      margin-bottom: 1.4rem;
+    }
+
+    .hero-buttons { display: flex; gap: .85rem; flex-wrap: wrap; align-items: center; }
 
     /* =============================================
        BUTTONS (shared)
@@ -459,173 +511,157 @@
       box-shadow: 0 8px 30px rgba(99,102,241,.25);
     }
 
+    /* Social proof row */
+    .hero-social-proof {
+      margin-top: 1.8rem;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      font-size: .76rem;
+      color: var(--text-muted);
+    }
+    .hero-avatars {
+      display: flex;
+    }
+    .hero-avatars span {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      background: var(--gradient);
+      margin-left: -7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .6rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .hero-avatars span:first-child { margin-left: 0; }
+
     /* =============================================
-       NEW HERO VISUAL: SERVICES CARD
+       HERO VISUAL — CINEMATIC BARE IMAGE
        ============================================= */
     .hero-visual {
       position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      perspective: 1000px;
+      overflow: hidden;
+      min-height: 100vh;
     }
 
-    .id-card-wrapper {
-      position: relative;
-      width: 360px;
-      height: 240px;
-      transform-style: preserve-3d;
-      transform: rotateY(-10deg) rotateX(5deg);
-      transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-    }
-
-    .id-card-wrapper:hover {
-      transform: rotateY(0deg) rotateX(0deg) translateZ(10px);
-    }
-
-    .id-card {
+    .hero-photo-bare {
       position: absolute;
       inset: 0;
-      background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.6));
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
-      border-radius: 24px;
-      box-shadow: 
-        0 20px 40px rgba(0,0,0,0.1),
-        0 0 0 1px rgba(255,255,255,0.5) inset;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      padding: 1.5rem 1.8rem;
-    }
-
-    .card-art {
-      position: absolute;
-      top: -50px; right: -50px;
-      width: 200px; height: 200px;
-      background: radial-gradient(circle, var(--secondary) 0%, transparent 70%);
-      opacity: 0.15;
-      border-radius: 50%;
-      filter: blur(30px);
-    }
-    .card-art-2 {
-      position: absolute;
-      bottom: -30px; left: -30px;
-      width: 150px; height: 150px;
-      background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
-      opacity: 0.15;
-      border-radius: 50%;
-      filter: blur(30px);
-    }
-
-    .card-content {
-      position: relative;
-      z-index: 2;
+      width: 100%;
       height: 100%;
-      display: flex;
-      flex-direction: column;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+      transform-origin: center;
+      transition: transform .1s linear;
     }
 
-    .services-header {
+    /* Left fade — seamless blend into bg */
+    .hero-visual::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 220px; height: 100%;
+      background: linear-gradient(to right,
+        #e8e4f8 0%,
+        rgba(232,228,248,.85) 30%,
+        rgba(232,228,248,.3) 65%,
+        transparent 100%);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* Bottom fade */
+    .hero-visual::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 25%;
+      background: linear-gradient(to top,
+        rgba(234,244,255,.7) 0%,
+        transparent 100%);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* ── Floating Stat Pills ── */
+    .floating-pill {
+      position: absolute;
+      background: rgba(255,255,255,.88);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-radius: 14px;
+      box-shadow:
+        0 6px 24px rgba(0,0,0,.09),
+        0 1px 0 rgba(255,255,255,.9) inset,
+        0 0 0 1px rgba(255,255,255,.6) inset;
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 0.5rem;
+      gap: .6rem;
+      padding: .65rem 1rem;
+      font-size: .8rem;
+      font-weight: 700;
+      color: var(--text);
+      z-index: 10;
+      border: 1px solid rgba(255,255,255,.7);
     }
-    
-    .services-icon-box {
-      width: 32px; height: 32px;
-      background: var(--gradient);
-      border-radius: 8px;
+    .floating-pill .pill-icon {
+      width: 30px; height: 30px;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
-    }
-    
-    .services-title {
-      font-size: 1.3rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      background: var(--gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .services-subtitle {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: var(--text-light);
-      font-weight: 600;
-      margin-bottom: 1.2rem;
-      padding-left: 0.5rem;
-    }
-
-    .services-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-      flex-grow: 1;
-      justify-content: center;
-    }
-
-    .service-item {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: var(--text-mid);
-      transition: transform 0.2s;
-    }
-    
-    .service-item:hover {
-      transform: translateX(5px);
-      color: var(--primary);
-    }
-
-    .service-check {
-      color: var(--accent);
       flex-shrink: 0;
     }
 
-    .card-footer-visual {
-      margin-top: auto;
-      padding-top: 1rem;
-      border-top: 1px solid rgba(0,0,0,0.05);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .card-status-text {
-      font-size: 0.7rem;
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--text-muted);
+    .pill-1 { top: 14%; left: 6%; animation: pillFloat 6s ease-in-out infinite; }
+    .pill-1 .pill-icon { background: linear-gradient(135deg,#6366f1,#8b5cf6); }
+
+    .pill-2 { top: 48%; right: 5%; animation: pillFloat 7s ease-in-out infinite 1.5s; }
+    .pill-2 .pill-icon { background: linear-gradient(135deg,#ec4899,#f43f5e); }
+
+    .pill-3 { bottom: 14%; left: 8%; animation: pillFloat 5.5s ease-in-out infinite 0.8s; }
+    .pill-3 .pill-icon { background: linear-gradient(135deg,#14b8a6,#06b6d4); }
+
+    .pill-label { display: flex; flex-direction: column; line-height: 1.25; }
+    .pill-label strong { font-size: .86rem; font-weight: 800; color: var(--text); }
+    .pill-label span { font-size: .65rem; font-weight: 500; color: var(--text-light); }
+
+    @keyframes pillFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      33%       { transform: translateY(-9px) rotate(.5deg); }
+      66%       { transform: translateY(-4px) rotate(-.3deg); }
     }
 
-    .floating-tech {
-      position: absolute;
-      background: #fff;
-      padding: 8px 12px;
-      border-radius: 12px;
-      box-shadow: var(--shadow-md);
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--text-mid);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      z-index: 5;
-      border: 1px solid var(--border-light);
+    .floating-tech { display: none; }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .hero-content { grid-template-columns: 1fr; min-height: auto; }
+      .hero { padding: 0; }
+      .hero-text { padding: 8rem 1.5rem 2.5rem; text-align: center; order: 1; align-items: center; }
+      .hero-text p { margin-left: auto; margin-right: auto; }
+      .hero-buttons { justify-content: center; }
+      .hero-eyebrow { justify-content: center; }
+      .hero-social-proof { justify-content: center; }
+      .hero-visual { order: 2; min-height: 75vw; max-height: 90vw; }
+      /* Hapus gradasi di mobile agar wajah tidak tertutup */
+      .hero-visual::before { display: none; }
+      .hero-visual::after { display: none; }
+      .pill-1 { top: 10%; left: 4%; }
+      .pill-2 { top: auto; bottom: 28%; right: 4%; }
+      .pill-3 { bottom: 8%; left: 4%; }
     }
-    .tech-1 { top: -20px; left: -30px; animation: float 6s ease-in-out infinite; }
-    .tech-2 { bottom: -10px; right: -20px; animation: float 7s ease-in-out infinite 1s; }
-    
-    @keyframes float {
-      0%, 100% { transform: translateY(0) rotate(0deg); }
-      50% { transform: translateY(-10px) rotate(2deg); }
+    @media (max-width: 600px) {
+      .hero-text { padding: 6.5rem 1.25rem 2rem; }
+      .hero-visual { min-height: 82vw; }
+      .floating-pill { padding: .6rem 1rem; gap: .55rem; }
+      .floating-pill .pill-icon { width: 28px; height: 28px; border-radius: 9px; }
+      .pill-label strong { font-size: .82rem; }
+      .pill-label span { font-size: .65rem; }
     }
 
     /* =============================================
@@ -811,7 +847,7 @@
     .about-badge svg { width: 16px; height: 16px; }
 
     /* =============================================
-       SKILLS
+       SKILLS — REDESIGNED
        ============================================= */
     .skills-bg {
       background: linear-gradient(180deg, var(--bg-soft) 0%, #fff 100%);
@@ -831,79 +867,145 @@
     .skills-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 1.5rem;
+      gap: 1.25rem;
       margin-top: 3rem;
       width: 100%;
     }
 
     .skill-card {
-      background: rgba(255,255,255,.8);
-      backdrop-filter: blur(10px);
-      padding: 1.8rem;
+      background: #fff;
+      padding: 0;
       border-radius: var(--radius-md);
       box-shadow: var(--shadow-sm);
       transition: all .4s cubic-bezier(.4,0,.2,1);
       border: 1px solid var(--border-light);
       position: relative;
       overflow: hidden;
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
     }
+
+    /* Accent bar kiri */
     .skill-card::before {
       content: '';
       position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
+      left: 0; top: 0; bottom: 0;
+      width: 4px;
       background: var(--gradient);
-      transform: scaleX(0);
-      transition: transform .4s;
-      transform-origin: left;
+      border-radius: 0;
+      transform: scaleY(0);
+      transition: transform .4s cubic-bezier(.4,0,.2,1);
+      transform-origin: bottom;
     }
     .skill-card::after {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(135deg, rgba(99,102,241,.03), rgba(236,72,153,.03));
+      background: linear-gradient(135deg, rgba(99,102,241,.025), rgba(236,72,153,.025));
       opacity: 0;
       transition: opacity .4s;
     }
     .skill-card:hover {
-      transform: translateY(-6px);
+      transform: translateY(-5px) translateX(2px);
       box-shadow: var(--shadow-lg);
-      border-color: rgba(99,102,241,.15);
+      border-color: rgba(99,102,241,.12);
     }
-    .skill-card:hover::before { transform: scaleX(1); }
+    .skill-card:hover::before { transform: scaleY(1); }
     .skill-card:hover::after { opacity: 1; }
     .skill-card > * { position: relative; z-index: 1; }
 
+    /* Icon kolom kiri */
+    .skill-icon-wrap {
+      flex-shrink: 0;
+      width: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(99,102,241,.06), rgba(139,92,246,.06));
+      border-right: 1px solid var(--border-light);
+      transition: background .4s;
+    }
+    .skill-card:hover .skill-icon-wrap {
+      background: linear-gradient(135deg, rgba(99,102,241,.12), rgba(139,92,246,.1));
+    }
+
     .skill-icon {
-      width: 48px; height: 48px;
-      background: var(--bg-soft);
+      width: 44px; height: 44px;
+      background: #fff;
       border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 1rem;
       overflow: hidden;
       border: 1px solid var(--border-light);
+      box-shadow: 0 2px 8px rgba(0,0,0,.06);
       transition: all .3s;
     }
-    .skill-card:hover .skill-icon { background: var(--primary-ultra); border-color: rgba(99,102,241,.2); }
-    .skill-icon img { width: 28px; height: 28px; object-fit: contain; }
+    .skill-card:hover .skill-icon {
+      transform: scale(1.1) rotate(-3deg);
+      box-shadow: 0 4px 16px rgba(99,102,241,.2);
+      border-color: rgba(99,102,241,.2);
+    }
+    .skill-icon img { width: 26px; height: 26px; object-fit: contain; }
 
-    .skill-name { font-size: 1.15rem; font-weight: 700; margin-bottom: .4rem; letter-spacing: -.01em; }
-    .skill-desc { color: var(--text-light); margin-bottom: 1rem; line-height: 1.65; font-size: .92rem; }
+    /* Konten kanan */
+    .skill-body {
+      flex: 1;
+      padding: 1.25rem 1.4rem;
+      min-width: 0;
+    }
 
-    .skill-tags { display: flex; flex-wrap: wrap; gap: .4rem; }
+    .skill-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: .35rem;
+    }
+
+    .skill-name {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -.01em;
+      color: var(--text);
+    }
+    .skill-card:hover .skill-name { color: var(--primary); }
+
+    .skill-badge {
+      font-size: .62rem;
+      font-weight: 700;
+      color: var(--primary);
+      background: rgba(99,102,241,.08);
+      border: 1px solid rgba(99,102,241,.12);
+      padding: .15rem .5rem;
+      border-radius: 50px;
+      letter-spacing: .03em;
+      white-space: nowrap;
+    }
+
+    .skill-desc {
+      color: var(--text-light);
+      margin-bottom: .85rem;
+      line-height: 1.6;
+      font-size: .82rem;
+    }
+
+    .skill-tags { display: flex; flex-wrap: wrap; gap: .35rem; }
     .tag {
-      padding: .25rem .7rem;
+      padding: .2rem .6rem;
       background: var(--bg-soft);
       color: var(--text-light);
       border-radius: 50px;
-      font-size: .78rem;
+      font-size: .72rem;
       font-weight: 500;
       border: 1px solid var(--border-light);
       transition: all .2s;
     }
-    .skill-card:hover .tag { border-color: rgba(99,102,241,.15); color: var(--text-mid); }
+    .skill-card:hover .tag {
+      border-color: rgba(99,102,241,.15);
+      color: var(--primary);
+      background: rgba(99,102,241,.04);
+    }
 
     /* =============================================
        PROJECTS
@@ -985,11 +1087,69 @@
       width: 100%;
     }
 
+    /* =============================================
+       CERTIFICATES SLIDER
+       ============================================= */
+    .certs-slider-wrap {
+      position: relative;
+      margin-top: 3rem;
+    }
+
+    /* Tombol panah — default hidden, muncul di mobile via JS */
+    .cert-nav {
+      display: none;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(99,102,241,.2);
+      background: rgba(255,255,255,.95);
+      backdrop-filter: blur(10px);
+      color: var(--primary);
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(0,0,0,.1);
+      transition: all .25s cubic-bezier(.4,0,.2,1);
+    }
+    .cert-nav:hover {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+      transform: translateY(-50%) scale(1.08);
+      box-shadow: 0 6px 20px rgba(99,102,241,.35);
+    }
+    .cert-nav svg { flex-shrink: 0; }
+    .cert-nav-left  { left: -16px; }
+    .cert-nav-right { right: -16px; }
+    .cert-nav.visible { display: flex; }
+
+    /* Dot indicators */
+    .cert-dots {
+      display: none;
+      justify-content: center;
+      gap: .45rem;
+      margin-top: .85rem;
+    }
+    .cert-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: all .3s;
+      cursor: pointer;
+    }
+    .cert-dot.active {
+      background: var(--primary);
+      width: 18px;
+      border-radius: 3px;
+    }
+
     .certs-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
       gap: 1.75rem;
-      margin-top: 3rem;
       width: 100%;
     }
 
@@ -1350,17 +1510,18 @@
        ============================================= */
     @media (max-width: 768px) {
       /* PERBAIKAN 1: Kurangi padding Nav dan Section agar konten lebih 'full' di layar kecil */
-      #mainNav { padding: 1rem 1.25rem !important; }
-      #mainNav.scrolled { padding: .7rem 1.25rem !important; }
+      #mainNav { padding: .6rem 1.25rem !important; }
+      #mainNav.scrolled { padding: .45rem 1.25rem !important; }
       
       .section-wrap { padding: 5rem 1.25rem; }
       .section-title { font-size: clamp(1.75rem, 5vw, 2.4rem); }
 
-      .hero { padding: 6rem 1.25rem 3.5rem; }
-      .hero-content { grid-template-columns: 1fr; text-align: center; gap: 2.5rem; }
+      /* Hero mobile handled by hero-visual responsive block above */
+      .hero-content { grid-template-columns: 1fr; min-height: auto; }
+      .hero-text { padding: 7rem 1.25rem 2rem; text-align: center; order: 1; }
       .hero-text p { margin-left: auto; margin-right: auto; }
       .hero-buttons { justify-content: center; }
-      .hero-visual { order: 2; }
+      .hero-visual { order: 2; min-height: 75vw; max-height: 85vw; }
 
       .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
       .about-visual { order: -1; }
@@ -1368,17 +1529,46 @@
       .about-badge { bottom: -10px; right: -10px; font-size: .75rem; padding: .4rem .8rem; }
       .about-text { font-size: .98rem; }
 
-      .skills-grid { grid-template-columns: 1fr; gap: 1.25rem; }
-      .skill-card { padding: 1.5rem; }
+      .skills-grid { grid-template-columns: 1fr; gap: 1rem; }
+      .skill-card { padding: 0; }
+      .skill-icon-wrap { width: 68px; }
+      .skill-body { padding: 1.1rem 1.25rem; }
 
-      /* PERBAIKAN 2: Grid Project & Cert di Mobile diubah jadi 1 kolom penuh */
-      .projects-grid { grid-template-columns: 1fr; gap: 1.5rem; }
-      .project-thumb { height: 200px; }
-      .project-info { padding: 1.25rem; }
+      /* Projects: 2 kolom di mobile */
+      .projects-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+      .project-thumb { height: 140px; }
+      .project-info { padding: 1rem; }
 
-      .certs-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+      /* Certificates: horizontal scroll, tampil 1 card tengah */
+      .certs-slider-wrap { margin-top: 2rem; }
+      .cert-nav.visible { display: flex; }
+      .cert-dots { display: flex; }
+      .certs-grid {
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        gap: 1rem;
+        padding-bottom: .5rem;
+        padding-left: calc(50% - 41vw);
+        padding-right: calc(50% - 41vw);
+        scrollbar-width: none;
+      }
+      .certs-grid::-webkit-scrollbar { display: none; }
+      .cert-card {
+        flex: 0 0 82vw;
+        scroll-snap-align: center;
+        transform: scale(.95);
+        transition: transform .4s cubic-bezier(.4,0,.2,1), box-shadow .4s;
+        opacity: .7;
+      }
+      .cert-card.active-slide {
+        transform: scale(1);
+        opacity: 1;
+        box-shadow: var(--shadow-lg);
+      }
       .cert-thumb { aspect-ratio: 16 / 9; padding: 10px; }
-      .cert-info { padding: 1.15rem 1.25rem; }
 
       .contact-inner { grid-template-columns: 1fr; gap: 2.5rem; }
       .contact-big-title { font-size: clamp(1.75rem, 5vw, 2.4rem); }
@@ -1389,7 +1579,6 @@
 
       footer { padding: 2rem 1.25rem; }
       
-      /* Sembunyikan elemen mengambang di hero untuk layar portrait agar tidak overflow */
       .floating-tech { display: none; } 
     }
 
@@ -1401,14 +1590,8 @@
       .section-tag { font-size: .76rem; padding: .35rem .9rem; }
       .section-desc { font-size: .92rem; }
 
-      .hero { padding: 5.5rem 1rem 3rem; min-height: auto; }
-      .hero-badge { font-size: .78rem; padding: .35rem .85rem; }
-      .hero-text h1 { margin-bottom: 1.25rem; }
-      .hero-text p { font-size: 1rem; margin-bottom: 1.5rem; }
-      .hero-buttons { flex-direction: column; align-items: stretch; gap: .75rem; }
-      .btn { width: 100%; justify-content: center; padding: .8rem 1.5rem; font-size: .9rem; }
-      
-      .id-card-wrapper { width: 100%; max-width: 300px; height: auto; aspect-ratio: 3/2; }
+      .hero-text { padding: 6rem 1rem 1.5rem; }
+      .hero-visual { min-height: 80vw; }
 
       .tech-marquee { padding: 1.2rem 0; }
       .marquee-item { padding: 0 1.2rem; font-size: .82rem; }
@@ -1425,23 +1608,25 @@
       .corner-deco.bl { bottom: -10px; left: -10px; }
       .corner-deco.br { bottom: -10px; right: -10px; }
 
-      .skill-card { padding: 1.25rem; }
-      .skill-icon { width: 40px; height: 40px; border-radius: 10px; margin-bottom: .85rem; }
-      .skill-icon img { width: 24px; height: 24px; }
-      .skill-name { font-size: 1.05rem; }
-      .skill-desc { font-size: .85rem; margin-bottom: .85rem; }
+      .skill-card { padding: 0; }
+      .skill-icon { width: 36px; height: 36px; border-radius: 10px; }
+      .skill-icon img { width: 20px; height: 20px; }
+      .skill-icon-wrap { width: 64px; }
+      .skill-name { font-size: .92rem; }
+      .skill-desc { font-size: .78rem; margin-bottom: .7rem; }
+      .skill-body { padding: 1rem 1.1rem; }
       .skill-tags { gap: .3rem; }
       .tag { padding: .2rem .6rem; font-size: .73rem; }
 
-      .project-thumb { height: 180px; }
-      .project-info { padding: 1.1rem; }
-      .project-num { font-size: .76rem; }
-      .project-title { font-size: 1.05rem; }
-      .project-desc { font-size: .85rem; margin-bottom: .85rem; }
-      .project-footer { gap: .4rem; }
+      .project-thumb { height: 110px; }
+      .project-info { padding: .85rem; }
+      .project-num { font-size: .72rem; }
+      .project-title { font-size: .92rem; }
+      .project-desc { font-size: .78rem; margin-bottom: .7rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+      .project-footer { gap: .3rem; }
 
-      .certs-grid { gap: 1.25rem; }
-      .cert-thumb { aspect-ratio: 16 / 10; padding: 8px; }
+      .certs-grid { gap: .85rem; }
+      .cert-card { flex: 0 0 88vw; }
       .cert-info { padding: 1rem 1.15rem; }
       .cert-issuer-badge { font-size: .68rem; padding: .18rem .5rem; }
       .cert-issuer-badge svg { width: 10px; height: 10px; }
@@ -1473,8 +1658,9 @@
       .hero-text p { font-size: .9rem; }
       .id-card-wrapper { width: 260px; height: 180px; }
       .avatar-box { width: 160px; height: 160px; }
-      .skill-card { padding: 1.1rem; }
-      .skill-name { font-size: 1rem; }
+      .skill-card { padding: 0; }
+      .skill-icon-wrap { width: 58px; }
+      .skill-name { font-size: .88rem; }
       .project-thumb { height: 160px; }
       .project-title { font-size: 1rem; }
       .cert-thumb { aspect-ratio: 16 / 10; padding: 6px; }
@@ -1486,13 +1672,10 @@
        RESPONSIVE — LANDSCAPE PHONE
        ============================================= */
     @media (max-height: 500px) and (orientation: landscape) {
-      .hero { min-height: auto; padding: 4rem 1.25rem 2rem; }
-      .hero-content { gap: 1.5rem; }
       .hero-text h1 { font-size: 2rem; }
       .hero-text p { display: none; }
       .hero-buttons { gap: .5rem; }
-      .id-card-wrapper { width: 240px; height: 160px; }
-      .floating-tech { display: none; }
+      .floating-pill { display: none; }
     }
   </style>
 </head>
@@ -1571,62 +1754,43 @@
           <span class="hero-badge-dot"></span>
           {{ $settings['hero_badge'] ?? 'Available for work' }}
         </div>
-        <h1>Hi, I'm<br><span class="typed-name" id="typingName"></span></h1>
+        <div class="hero-eyebrow">{{ $settings['role'] ?? 'Frontend Developer' }}</div>
+        <h1>
+          <span class="hero-hi">Hello, I'm</span>
+          <span class="typed-name" id="typingName"></span>
+        </h1>
+        <div class="hero-role-tag">
+          <div class="hero-role-icon">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          </div>
+          Crafting Digital Experiences
+        </div>
         <p>{{ $settings['hero_desc'] ?? 'Frontend Developer passionate about creating beautiful, responsive, and user-friendly web experiences.' }}</p>
+        <div class="hero-divider"></div>
         <div class="hero-buttons">
           <a href="#contact" class="btn btn-primary">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             Get In Touch
           </a>
           <a href="#projects" class="btn btn-outline">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
             View Projects
           </a>
+        </div>
+        <div class="hero-social-proof">
+          <div class="hero-avatars">
+            <span>A</span><span>B</span><span>C</span>
+          </div>
+          Trusted by clients worldwide
         </div>
       </div>
       
       <div class="hero-visual reveal" style="transition-delay:.2s">
-        <div class="id-card-wrapper">
-            <div class="id-card">
-                <div class="card-art"></div>
-                <div class="card-art-2"></div>
-                <div class="card-content">
-                    <div class="services-header">
-                        <div class="services-icon-box">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-                        </div>
-                        <div class="services-title">{{ $settings['hero_card_title'] ?? 'Services' }}</div>
-                    </div>
-                    <div class="services-subtitle">{{ $settings['hero_card_subtitle'] ?? 'Our Services' }}</div>
-                    @php
-                        $items = explode(',', $settings['hero_card_items'] ?? 'Web Development, User Interface Design, Mobile Development');
-                    @endphp
-                    <div class="services-list">
-                        @foreach($items as $item)
-                            @if(trim($item))
-                            <div class="service-item">
-                                <span class="service-check">✓</span>
-                                {{ trim($item) }}
-                            </div>
-                            @endif
-                        @endforeach
-                    </div>
-                    <div class="card-footer-visual">
-                        <div class="card-status-text">MOSTFAL.DEV</div>
-                        <div class="card-status-text" style="opacity:0.5">ID: 884-X</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <img class="hero-photo-bare"
+             src="{{ !empty($settings['hero_photo']) ? Storage::url($settings['hero_photo']) : asset('image/fotoku.png') }}"
+             alt="{{ $settings['name'] ?? 'Ahmad Badrul Falah' }}"
+             loading="eager">
 
-        <div class="floating-tech tech-1">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-            Web
-        </div>
-        <div class="floating-tech tech-2">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
-            Dev
-        </div>
       </div>
     </div>
   </section>
@@ -1753,7 +1917,14 @@
         <h2 class="section-title">Licenses & <span class="gradient-text">Certificates</span></h2>
         <p class="section-desc">Sertifikat yang telah saya peroleh sebagai bukti kompetensi.</p>
       </div>
-      <div class="certs-grid">
+      <div class="certs-slider-wrap">
+        <button class="cert-nav cert-nav-left" id="certNavLeft" aria-label="Geser kiri" style="display:none">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="cert-nav cert-nav-right" id="certNavRight" aria-label="Geser kanan">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <div class="certs-grid" id="certsGrid">
         @if(isset($certificates) && $certificates->count())
           @foreach($certificates as $i => $cert)
             <div class="cert-card reveal" style="transition-delay:{{ $i * 0.1 }}s">
@@ -1785,6 +1956,9 @@
             <p>Belum ada sertifikat ditambahkan.</p>
           </div>
         @endif
+        </div>
+        <!-- Dot indicators (mobile only) -->
+        <div class="cert-dots" id="certDots"></div>
       </div>
     </div>
   </div>
@@ -1801,19 +1975,26 @@
         @if($skills->count())
           @foreach($skills as $i => $skill)
             <div class="skill-card reveal" style="transition-delay:{{ $i * 0.1 }}s">
-              <div class="skill-icon">
-                @if($skill->icon_image)
-                  <img src="{{ Storage::url($skill->icon_image) }}" alt="{{ $skill->name }}">
-                @else
-                  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/code/code-original.svg" alt="{{ $skill->name }}">
-                @endif
+              <div class="skill-icon-wrap">
+                <div class="skill-icon">
+                  @if($skill->icon_image)
+                    <img src="{{ Storage::url($skill->icon_image) }}" alt="{{ $skill->name }}">
+                  @else
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/code/code-original.svg" alt="{{ $skill->name }}">
+                  @endif
+                </div>
               </div>
-              <div class="skill-name">{{ $skill->name }}</div>
-              <div class="skill-desc">{{ $skill->description }}</div>
-              <div class="skill-tags">
-                @foreach(explode(',', $skill->tags ?? '') as $tag)
-                  @if(trim($tag))<span class="tag">{{ trim($tag) }}</span>@endif
-                @endforeach
+              <div class="skill-body">
+                <div class="skill-header">
+                  <div class="skill-name">{{ $skill->name }}</div>
+                  <span class="skill-badge">Expert</span>
+                </div>
+                <div class="skill-desc">{{ $skill->description }}</div>
+                <div class="skill-tags">
+                  @foreach(explode(',', $skill->tags ?? '') as $tag)
+                    @if(trim($tag))<span class="tag">{{ trim($tag) }}</span>@endif
+                  @endforeach
+                </div>
               </div>
             </div>
           @endforeach
@@ -1992,17 +2173,121 @@
       });
       card.addEventListener('mouseleave', function() { this.style.transform = ''; });
     });
+
+    /* ── Certificate Slider (mobile) ── */
+    (function() {
+      var grid     = document.getElementById('certsGrid');
+      var btnLeft  = document.getElementById('certNavLeft');
+      var btnRight = document.getElementById('certNavRight');
+      var dotsWrap = document.getElementById('certDots');
+      if (!grid || !btnLeft || !btnRight) return;
+
+      var cards = grid.querySelectorAll('.cert-card');
+      if (!cards.length) return;
+
+      var isMobile = window.innerWidth <= 768;
+      var currentIdx = 0;
+
+      function buildDots() {
+        dotsWrap.innerHTML = '';
+        cards.forEach(function(_, i) {
+          var d = document.createElement('span');
+          d.className = 'cert-dot' + (i === 0 ? ' active' : '');
+          d.addEventListener('click', function() { scrollTo(i); });
+          dotsWrap.appendChild(d);
+        });
+      }
+
+      function updateDots(idx) {
+        dotsWrap.querySelectorAll('.cert-dot').forEach(function(d, i) {
+          d.classList.toggle('active', i === idx);
+        });
+      }
+
+      function updateActiveCard(idx) {
+        cards.forEach(function(c, i) {
+          c.classList.toggle('active-slide', i === idx);
+        });
+      }
+
+      function updateNav(idx) {
+        if (!isMobile) return;
+        /* Kiri: sembunyikan di card pertama */
+        if (idx === 0) {
+          btnLeft.classList.remove('visible');
+        } else {
+          btnLeft.classList.add('visible');
+        }
+        /* Kanan: sembunyikan di card terakhir */
+        if (idx >= cards.length - 1) {
+          btnRight.classList.remove('visible');
+        } else {
+          btnRight.classList.add('visible');
+        }
+      }
+
+      function scrollTo(idx) {
+        if (idx < 0) idx = 0;
+        if (idx >= cards.length) idx = cards.length - 1;
+        currentIdx = idx;
+        cards[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        updateDots(idx);
+        updateActiveCard(idx);
+        updateNav(idx);
+      }
+
+      function init() {
+        isMobile = window.innerWidth <= 768;
+        if (isMobile) {
+          buildDots();
+          updateActiveCard(0);
+          updateNav(0);
+          /* Kanan selalu visible di awal jika ada lebih dari 1 */
+          if (cards.length > 1) btnRight.classList.add('visible');
+        } else {
+          btnLeft.classList.remove('visible');
+          btnRight.classList.remove('visible');
+          cards.forEach(function(c) { c.classList.remove('active-slide'); });
+        }
+      }
+
+      btnLeft.addEventListener('click',  function() { scrollTo(currentIdx - 1); });
+      btnRight.addEventListener('click', function() { scrollTo(currentIdx + 1); });
+
+      /* Deteksi scroll manual (swipe) */
+      var scrollTimer;
+      grid.addEventListener('scroll', function() {
+        clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(function() {
+          if (!isMobile) return;
+          /* Cari card yang paling center */
+          var gridCenter = grid.scrollLeft + grid.clientWidth / 2;
+          var closest = 0, minDist = Infinity;
+          cards.forEach(function(c, i) {
+            var dist = Math.abs((c.offsetLeft + c.offsetWidth / 2) - gridCenter);
+            if (dist < minDist) { minDist = dist; closest = i; }
+          });
+          currentIdx = closest;
+          updateDots(closest);
+          updateActiveCard(closest);
+          updateNav(closest);
+        }, 80);
+      }, { passive: true });
+
+      window.addEventListener('resize', init);
+      init();
+    })();
     
     (function() {
-      var card = document.querySelector('.id-card-wrapper');
-      if(!card) return;
-      card.addEventListener('mousemove', function(e) {
-        var r = card.getBoundingClientRect(); var x = e.clientX - r.left; var y = e.clientY - r.top;
-        var cx = r.width / 2; var cy = r.height / 2;
-        var dx = (cx - x) / 20; var dy = (cy - y) / 20;
-        card.style.transform = 'rotateY(' + dx + 'deg) rotateX(' + (-dy) + 'deg) translateZ(10px)';
+      /* Subtle parallax on hero photo */
+      var photo = document.querySelector('.hero-photo-bare');
+      if(!photo || window.innerWidth <= 900) return;
+      document.addEventListener('mousemove', function(e) {
+        var x = (e.clientX / window.innerWidth - .5) * 8;
+        var y = (e.clientY / window.innerHeight - .5) * 8;
+        photo.style.transform = 'scale(1.04) translate(' + x + 'px, ' + y + 'px)';
+        photo.style.transition = 'transform .1s linear';
       });
-      card.addEventListener('mouseleave', function() { card.style.transform = 'rotateY(-10deg) rotateX(5deg)'; });
     })();
 
     (function() {

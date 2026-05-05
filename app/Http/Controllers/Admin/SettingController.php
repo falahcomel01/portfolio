@@ -19,24 +19,19 @@ class SettingController extends Controller
     public function update(Request $request)
     {
         // 1. DAFTAR SEMUA FIELD TEKS
-        // Pastikan semua key ini ada di form input name="..."
-        // NOTE: Saya menambahkan 3 field baru di paling bawah (hero_card...)
-        // Saya menghapus role, passion, hero_badge, dribbble karena sudah tidak ada di form.
         $fields = [
-            'name', 'title', 
-            'hero_desc', 'contact_desc', 
-            'whatsapp', 'wa_message', 'avatar_link', 
+            'name', 'title',
+            'hero_desc', 'contact_desc',
+            'whatsapp', 'wa_message', 'avatar_link',
             'github', 'linkedin', 'twitter',
-            
-            // === FIELD BARU UNTUK HERO VISUAL CARD ===
-            'hero_card_title', 
-            'hero_card_subtitle', 
-            'hero_card_items'
+
+            // === FIELD HERO VISUAL CARD ===
+            'hero_card_title',
+            'hero_card_subtitle',
+            'hero_card_items',
         ];
 
         foreach ($fields as $field) {
-            // Update/Create data setting
-            // Kita simpan meskipun kosong, agar user bisa menghapus teks jika mau
             if ($request->has($field)) {
                 Setting::updateOrCreate(
                     ['key' => $field],
@@ -48,43 +43,43 @@ class SettingController extends Controller
         // Response data untuk dikirim ke frontend (JSON)
         $responseData = [
             'success' => true,
-            'message' => 'Pengaturan berhasil disimpan!'
+            'message' => 'Pengaturan berhasil disimpan!',
         ];
 
-        // 2. HANDLE UPLOAD AVATAR
+        // 2. HANDLE UPLOAD FOTO HERO (foto besar di section hero atas)
+        if ($request->hasFile('hero_photo')) {
+            $oldHero = Setting::where('key', 'hero_photo')->first();
+            if ($oldHero && $oldHero->value && Storage::disk('public')->exists($oldHero->value)) {
+                Storage::disk('public')->delete($oldHero->value);
+            }
+            $path = $request->file('hero_photo')->store('image', 'public');
+            Setting::updateOrCreate(['key' => 'hero_photo'], ['value' => $path]);
+            $responseData['hero_photo_url'] = Storage::url($path);
+        }
+
+        // 3. HANDLE UPLOAD AVATAR (foto profil di section about)
         if ($request->hasFile('avatar')) {
-            // Hapus gambar lama jika ada
             $oldAvatar = Setting::where('key', 'avatar')->first();
-            if ($oldAvatar && Storage::disk('public')->exists($oldAvatar->value)) {
+            if ($oldAvatar && $oldAvatar->value && Storage::disk('public')->exists($oldAvatar->value)) {
                 Storage::disk('public')->delete($oldAvatar->value);
             }
-
-            // Simpan gambar baru
             $path = $request->file('avatar')->store('image', 'public');
             Setting::updateOrCreate(['key' => 'avatar'], ['value' => $path]);
-            
-            // Kirim URL baru agar preview gambar di frontend langsung berubah
             $responseData['avatar_url'] = Storage::url($path);
         }
 
-        // 3. HANDLE UPLOAD FAVICON
+        // 4. HANDLE UPLOAD FAVICON
         if ($request->hasFile('favicon')) {
-            // Hapus gambar lama jika ada
             $oldFavicon = Setting::where('key', 'favicon')->first();
-            if ($oldFavicon && Storage::disk('public')->exists($oldFavicon->value)) {
+            if ($oldFavicon && $oldFavicon->value && Storage::disk('public')->exists($oldFavicon->value)) {
                 Storage::disk('public')->delete($oldFavicon->value);
             }
-
-            // Simpan gambar baru
             $path = $request->file('favicon')->store('image', 'public');
             Setting::updateOrCreate(['key' => 'favicon'], ['value' => $path]);
-            
-            // Kirim URL baru
             $responseData['favicon_url'] = Storage::url($path);
         }
 
-        // 4. RETURN JSON (PENTING UNTUK AJAX)
-        // Form frontend menggunakan fetch(), jadi harus return JSON, bukan redirect.
+        // 5. RETURN JSON (untuk AJAX fetch())
         return response()->json($responseData);
     }
 }

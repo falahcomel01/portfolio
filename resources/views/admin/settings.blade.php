@@ -180,7 +180,7 @@
   .f-divider { border: none; border-top: 1px solid var(--border); margin: 1.75rem 0 1.5rem; }
 
   /* ── Upload ── */
-  .upload-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .upload-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; }
   .upload-box {
     position: relative; border: 1.5px dashed var(--border);
     border-radius: var(--radius); padding: 2.5rem 1.25rem 1.25rem;
@@ -508,6 +508,28 @@
       </div>
       <div class="s-card-body">
         <div class="upload-row">
+          <!-- FOTO HERO (foto besar di bagian atas / section hero) -->
+          <div class="upload-box {{ !empty($settings['hero_photo']) ? 'has-file' : '' }}" id="heroPhotoBox"
+            ondragenter="dragOn(event,'heroPhotoBox')" ondragover="dragOn(event,'heroPhotoBox')"
+            ondragleave="dragOff(event,'heroPhotoBox')" ondrop="dropIt(event,'heroPhotoBox')">
+            <input type="file" name="hero_photo" accept="image/*" onchange="prevUpload(this,'heroPhoto')">
+            <button type="button" class="ub-remove {{ !empty($settings['hero_photo']) ? 'show' : '' }}" onclick="clearUpload('heroPhoto')">
+              <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+            <div class="ub-icon">
+              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </div>
+            <div class="ub-title">Foto Hero (Banner Atas)</div>
+            <div class="ub-desc">Foto besar yang tampil di bagian hero utama</div>
+            <div class="ub-badges"><span class="ub-badge">JPG</span><span class="ub-badge">PNG</span><span class="ub-badge">2MB</span></div>
+            <div class="ub-preview" id="heroPhotoPreview">
+              @if(!empty($settings['hero_photo']))
+                <img src="{{ Storage::url($settings['hero_photo']) }}" alt="Hero Photo" class="prev-avatar" style="width:120px;height:80px;object-fit:cover;border-radius:12px;">
+              @endif
+            </div>
+          </div>
+
+          <!-- FOTO PROFIL (di section About) -->
           <div class="upload-box {{ !empty($settings['avatar']) ? 'has-file' : '' }}" id="avatarBox"
             ondragenter="dragOn(event,'avatarBox')" ondragover="dragOn(event,'avatarBox')"
             ondragleave="dragOff(event,'avatarBox')" ondrop="dropIt(event,'avatarBox')">
@@ -518,8 +540,8 @@
             <div class="ub-icon">
               <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             </div>
-            <div class="ub-title">Foto Profil</div>
-            <div class="ub-desc">Klik atau seret file ke sini</div>
+            <div class="ub-title">Foto Profil (About)</div>
+            <div class="ub-desc">Foto yang tampil di section About</div>
             <div class="ub-badges"><span class="ub-badge">JPG</span><span class="ub-badge">PNG</span><span class="ub-badge">2MB</span></div>
             <div class="ub-preview" id="avatarPreview">
               @if(!empty($settings['avatar']))
@@ -527,6 +549,8 @@
               @endif
             </div>
           </div>
+
+          <!-- FAVICON -->
           <div class="upload-box {{ !empty($settings['favicon']) ? 'has-file' : '' }}" id="faviconBox"
             ondragenter="dragOn(event,'faviconBox')" ondragover="dragOn(event,'faviconBox')"
             ondragleave="dragOff(event,'faviconBox')" ondrop="dropIt(event,'faviconBox')">
@@ -692,6 +716,7 @@
       document.querySelector('input[name="linkedin"]')?.value?.trim(),
       document.querySelector('input[name="twitter"]')?.value?.trim(),
     ];
+    if(document.getElementById('heroPhotoBox')?.classList.contains('has-file')) f.push('y');
     if(document.getElementById('avatarBox')?.classList.contains('has-file')) f.push('y');
     if(document.getElementById('faviconBox')?.classList.contains('has-file')) f.push('y');
     const pct=Math.round(f.filter(Boolean).length/f.length*100);
@@ -712,13 +737,20 @@
   function prevUpload(input,type){
     const file=input.files[0];if(!file)return;
     if(file.size>2*1024*1024){showToast('Ukuran file maksimal 2MB.','warning');input.value='';return;}
-    const box=document.getElementById(type+'Box'),pv=document.getElementById(type+'Preview'),rm=box.querySelector('.ub-remove');
+    // Mapping type ke ID box dan preview
+    const boxId = type==='heroPhoto' ? 'heroPhotoBox' : type+'Box';
+    const pvId  = type==='heroPhoto' ? 'heroPhotoPreview' : type+'Preview';
+    const box=document.getElementById(boxId),pv=document.getElementById(pvId),rm=box.querySelector('.ub-remove');
     const r=new FileReader();
-    r.onload=function(e){pv.innerHTML='<img src="'+e.target.result+'" alt="Preview" class="'+(type==='avatar'?'prev-avatar':'prev-favicon')+'">';box.classList.add('has-file');rm.classList.add('show');calcComp();};
+    const imgClass = type==='favicon' ? 'prev-favicon' : 'prev-avatar';
+    const extraStyle = type==='heroPhoto' ? ' style="width:120px;height:80px;object-fit:cover;border-radius:12px;"' : '';
+    r.onload=function(e){pv.innerHTML='<img src="'+e.target.result+'" alt="Preview" class="'+imgClass+'"'+extraStyle+'>';box.classList.add('has-file');rm.classList.add('show');calcComp();};
     r.readAsDataURL(file);
   }
   function clearUpload(type){
-    const box=document.getElementById(type+'Box'),pv=document.getElementById(type+'Preview'),i=box.querySelector('input[type="file"]'),rm=box.querySelector('.ub-remove');
+    const boxId = type==='heroPhoto' ? 'heroPhotoBox' : type+'Box';
+    const pvId  = type==='heroPhoto' ? 'heroPhotoPreview' : type+'Preview';
+    const box=document.getElementById(boxId),pv=document.getElementById(pvId),i=box.querySelector('input[type="file"]'),rm=box.querySelector('.ub-remove');
     i.value='';pv.innerHTML='';box.classList.remove('has-file');rm.classList.remove('show');calcComp();
   }
 
@@ -742,6 +774,7 @@
       .then(r=>r.json()).then(data=>{
         if(data.success){
           showToast(data.message||'Pengaturan berhasil disimpan!','success');
+          if(data.hero_photo_url){document.getElementById('heroPhotoPreview').innerHTML='<img src="'+data.hero_photo_url+'" class="prev-avatar" style="width:120px;height:80px;object-fit:cover;border-radius:12px;">';document.getElementById('heroPhotoBox').classList.add('has-file');document.querySelector('#heroPhotoBox .ub-remove').classList.add('show');}
           if(data.avatar_url){document.getElementById('avatarPreview').innerHTML='<img src="'+data.avatar_url+'" class="prev-avatar">';document.getElementById('avatarBox').classList.add('has-file');document.querySelector('#avatarBox .ub-remove').classList.add('show');}
           if(data.favicon_url){document.getElementById('faviconPreview').innerHTML='<img src="'+data.favicon_url+'" class="prev-favicon">';document.getElementById('faviconBox').classList.add('has-file');document.querySelector('#faviconBox .ub-remove').classList.add('show');}
           calcComp();
