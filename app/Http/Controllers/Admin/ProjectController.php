@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class ProjectController extends Controller
 {
@@ -62,11 +64,22 @@ class ProjectController extends Controller
 
     public function destroy(Project $project)
     {
-        if ($project->thumbnail && Storage::disk('public')->exists($project->thumbnail)) {
-            Storage::disk('public')->delete($project->thumbnail);
-        }
-        $project->delete();
+        $thumbnailPath = $project->thumbnail;
 
-        return redirect()->route('admin.projects')->with('success', 'Project berhasil dihapus!');
+        try {
+            DB::transaction(function () use ($project) {
+                $project->delete();
+            });
+
+            if ($thumbnailPath && Storage::disk('public')->exists($thumbnailPath)) {
+                Storage::disk('public')->delete($thumbnailPath);
+            }
+
+            return redirect()->route('admin.projects')->with('success', 'Project berhasil dihapus!');
+        } catch (Throwable $e) {
+            report($e);
+
+            return redirect()->route('admin.projects')->with('error', 'Project gagal dihapus. Silakan coba lagi.');
+        }
     }
 }

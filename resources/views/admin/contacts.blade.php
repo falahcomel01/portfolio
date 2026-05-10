@@ -778,6 +778,10 @@
     <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
     Hapus Semua
   </button>
+  <form id="bulkDeleteForm" method="POST" action="{{ route('admin.contacts.bulk-destroy') }}" style="display:none;">
+    @csrf
+    @method('DELETE')
+  </form>
 </div>
 
 <!-- ========== MESSAGE LIST ========== -->
@@ -982,6 +986,7 @@ if (deleteForm) {
 const searchInput = document.getElementById('searchInput');
 const filterBtn = document.getElementById('filterUnread');
 const bulkBtn = document.getElementById('bulkDeleteBtn');
+const bulkDeleteForm = document.getElementById('bulkDeleteForm');
 const container = document.getElementById('messageContainer');
 const noResults = document.getElementById('noResults');
 const filterCount = document.getElementById('filterCount');
@@ -1020,25 +1025,22 @@ function toggleFilter() {
 searchInput.addEventListener('input', applyFilters);
 
 function bulkDelete() {
-  if (confirm('Hapus semua pesan yang belum dibaca?')) { // Native confirm allowed for bulk
-    const items = container.querySelectorAll('.msg-item.unread');
-    if (items.length === 0) {
-      alert('Tidak ada pesan yang belum dibaca.');
-      return;
-    }
-    
-    // Add loading state to bulk button
-    bulkBtn.classList.add('btn-loading', 'btn-danger-spinner');
-    bulkBtn.style.pointerEvents = 'none';
+  const items = container.querySelectorAll('.msg-item.unread');
 
-    let count = 0;
-    items.forEach(item => {
-      const form = item.querySelector('form');
-      if (form) {
-        form.submit();
-        count++;
-      }
-    });
+  if (items.length === 0) {
+    alert('Tidak ada pesan yang belum dibaca.');
+    return;
+  }
+
+  if (!confirm(`Hapus ${items.length} pesan yang belum dibaca?`)) {
+    return;
+  }
+
+  bulkBtn.classList.add('btn-loading', 'btn-danger-spinner');
+  bulkBtn.style.pointerEvents = 'none';
+
+  if (bulkDeleteForm) {
+    bulkDeleteForm.submit();
   }
 }
 </script>

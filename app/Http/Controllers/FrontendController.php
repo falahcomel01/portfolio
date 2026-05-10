@@ -23,16 +23,16 @@ class FrontendController extends Controller
 
         // 2. Mapping data agar aman dan siap dikirim ke view
         $data = [
-            'name' => $profile->name ?? 'Nama Anda',
-            'title' => $profile->title ?? 'Job Title',
+            'name' => $profile?->name ?? 'Nama Anda',
+            'title' => $profile?->title ?? 'Job Title',
             'contact' => [
-                'phone' => $profile->phone ?? '',
-                'email' => $profile->email ?? '',
-                'linkedin' => $profile->linkedin ?? '',
-                'website' => $profile->website ?? '',
-                'address' => $profile->address ?? '',
+                'phone' => $profile?->phone ?? '',
+                'email' => $profile?->email ?? '',
+                'linkedin' => $profile?->linkedin ?? '',
+                'website' => $profile?->website ?? '',
+                'address' => $profile?->address ?? '',
             ],
-            'summary' => $profile->summary ?? '',
+            'summary' => $profile?->summary ?? '',
             
             // Ambil data dari tabel Experiences
             'work_experiences' => Experience::latest()->get()->map(function($item) {
@@ -65,8 +65,8 @@ class FrontendController extends Controller
             })->toArray(),
             
             'skills' => [
-                'soft' => $profile->soft_skills ?? '',
-                'hard' => $profile->hard_skills ?? '',
+                'soft' => $profile?->soft_skills ?? '',
+                'hard' => $profile?->hard_skills ?? '',
             ],
             
             // Ambil data dari tabel Projects
@@ -77,6 +77,6 @@ class FrontendController extends Controller
         // Pastikan file resources/views/cv_template.blade.php sudah ada
         $pdf = PDF::loadView('cv_template', $data);
         
-        return $pdf->download(($profile->name ?? 'CV') . '.pdf');
+        return $pdf->download(($profile?->name ?? 'CV') . '.pdf');
     }
 }

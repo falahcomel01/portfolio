@@ -18,7 +18,7 @@ class PortfolioRecoverySeeder extends Seeder
         if (User::count() === 0) {
             User::create([
                 'name' => 'Admin Portfolio',
-                'email' => 'admin@portfolio.local',
+                'email' => 'badrulf504@gmail.com',
                 'email_verified_at' => now(),
                 'password' => Hash::make('Admin12345!'),
             ]);

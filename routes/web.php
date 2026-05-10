@@ -18,7 +18,9 @@ use Illuminate\Support\Facades\Route;
 
 // === PUBLIC ROUTES ===
 Route::get('/', [PortfolioController::class, 'index'])->name('portfolio');
-Route::post('/contact', [PortfolioController::class, 'contactSend'])->name('contact.send');
+Route::post('/contact', [PortfolioController::class, 'contactSend'])
+    ->middleware('throttle:5,1')
+    ->name('contact.send');
 Route::get('/download-cv', [FrontendController::class, 'downloadCv'])->name('download.cv');
 
 // === AUTH ROUTES (Breeze) ===
@@ -68,6 +70,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     // Contacts
     Route::get('/contacts', [ContactController::class, 'index'])->name('contacts');
+    Route::delete('/contacts/bulk-delete', [ContactController::class, 'bulkDestroyUnread'])->name('contacts.bulk-destroy');
     Route::get('/contacts/{contact}', [ContactController::class, 'show'])->name('contacts.show');
     Route::delete('/contacts/{contact}', [ContactController::class, 'destroy'])->name('contacts.destroy');
 

@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Certificate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Throwable;
 
 class CertificateController extends Controller
 {
@@ -22,10 +24,10 @@ class CertificateController extends Controller
             });
         }
 
-        $certificates = $query->orderBy('sort_order', 'asc')
-                              ->orderBy('issued_date', 'desc')
-                              ->paginate(10)
-                              ->withQueryString();
+            $certificates = $query->orderBy('sort_order', 'asc')
+                                ->orderBy('issued_date', 'desc')
+                                ->paginate(10)
+                                ->withQueryString();
 
         $totalCertificates = Certificate::count();
         $withUrl = Certificate::whereNotNull('url')->where('url', '!=', '')->count();
@@ -97,14 +99,26 @@ class CertificateController extends Controller
 
     public function destroy(Certificate $certificate)
     {
-        if ($certificate->image && Storage::disk('public')->exists($certificate->image)) {
-            Storage::disk('public')->delete($certificate->image);
+        $imagePath = $certificate->image;
+
+        try {
+            DB::transaction(function () use ($certificate) {
+                $certificate->delete();
+            });
+
+            if ($imagePath && Storage::disk('public')->exists($imagePath)) {
+                Storage::disk('public')->delete($imagePath);
+            }
+
+            return redirect()
+                ->route('admin.certificates.index')
+                ->with('success', 'Sertifikat berhasil dihapus.');
+        } catch (Throwable $e) {
+            report($e);
+
+            return redirect()
+                ->route('admin.certificates.index')
+                ->with('error', 'Sertifikat gagal dihapus. Silakan coba lagi.');
         }
-
-        $certificate->delete();
-
-        return redirect()
-            ->route('admin.certificates.index')
-            ->with('success', 'Sertifikat berhasil dihapus.');
     }
 }

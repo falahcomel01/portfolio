@@ -9,6 +9,16 @@ use Illuminate\Support\Facades\Storage;
 
 class SettingController extends Controller
 {
+    private const TEXT_FIELDS = [
+        'name', 'title',
+        'hero_desc', 'contact_desc',
+        'whatsapp', 'wa_message', 'avatar_link',
+        'github', 'linkedin', 'twitter',
+        'hero_card_title',
+        'hero_card_subtitle',
+        'hero_card_items',
+    ];
+
     public function index()
     {
         // Mengambil semua setting menjadi array key => value
@@ -18,24 +28,30 @@ class SettingController extends Controller
 
     public function update(Request $request)
     {
-        // 1. DAFTAR SEMUA FIELD TEKS
-        $fields = [
-            'name', 'title',
-            'hero_desc', 'contact_desc',
-            'whatsapp', 'wa_message', 'avatar_link',
-            'github', 'linkedin', 'twitter',
+        $validated = $request->validate([
+            'name' => 'nullable|string|max:255',
+            'title' => 'nullable|string|max:255',
+            'hero_desc' => 'nullable|string|max:5000',
+            'contact_desc' => 'nullable|string|max:5000',
+            'whatsapp' => 'nullable|string|max:50',
+            'wa_message' => 'nullable|string|max:1000',
+            'avatar_link' => 'nullable|url|max:2048',
+            'github' => 'nullable|url|max:2048',
+            'linkedin' => 'nullable|url|max:2048',
+            'twitter' => 'nullable|url|max:2048',
+            'hero_card_title' => 'nullable|string|max:255',
+            'hero_card_subtitle' => 'nullable|string|max:255',
+            'hero_card_items' => 'nullable|string|max:5000',
+            'hero_photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+            'avatar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+            'favicon' => 'nullable|image|mimes:png,ico,webp|max:1024',
+        ]);
 
-            // === FIELD HERO VISUAL CARD ===
-            'hero_card_title',
-            'hero_card_subtitle',
-            'hero_card_items',
-        ];
-
-        foreach ($fields as $field) {
-            if ($request->has($field)) {
+        foreach (self::TEXT_FIELDS as $field) {
+            if (array_key_exists($field, $validated)) {
                 Setting::updateOrCreate(
                     ['key' => $field],
-                    ['value' => $request->input($field)]
+                    ['value' => $validated[$field]]
                 );
             }
         }

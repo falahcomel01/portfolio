@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -17,10 +19,20 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-   public function boot(): void
-{
-    \Illuminate\Support\Facades\Redirect::macro('intended', function ($default = '/') {
-        return app(\Illuminate\Routing\Redirector::class)->to($default);
-    });
-}
+    public function boot(): void
+    {
+        if (app()->environment(['local', 'testing'])) {
+            $compiledViewPath = sys_get_temp_dir().DIRECTORY_SEPARATOR.'portfolio-compiled-views';
+            File::ensureDirectoryExists($compiledViewPath);
+            config()->set('view.compiled', $compiledViewPath);
+        }
+
+        \Illuminate\Support\Facades\Redirect::macro('intended', function ($default = '/') {
+            return app(\Illuminate\Routing\Redirector::class)->to($default);
+        });
+
+        if (config('app.env') === 'production' && env('FORCE_HTTPS', false)) {
+            URL::forceScheme('https');
+        }
+    }
 }

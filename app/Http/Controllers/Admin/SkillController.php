@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Skill;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class SkillController extends Controller
 {
@@ -59,11 +61,22 @@ class SkillController extends Controller
 
     public function destroy(Skill $skill)
     {
-        if ($skill->icon_image && Storage::disk('public')->exists($skill->icon_image)) {
-            Storage::disk('public')->delete($skill->icon_image);
-        }
-        $skill->delete();
+        $iconPath = $skill->icon_image;
 
-        return redirect()->route('admin.skills')->with('success', 'Skill berhasil dihapus!');
+        try {
+            DB::transaction(function () use ($skill) {
+                $skill->delete();
+            });
+
+            if ($iconPath && Storage::disk('public')->exists($iconPath)) {
+                Storage::disk('public')->delete($iconPath);
+            }
+
+            return redirect()->route('admin.skills')->with('success', 'Skill berhasil dihapus!');
+        } catch (Throwable $e) {
+            report($e);
+
+            return redirect()->route('admin.skills')->with('error', 'Skill gagal dihapus. Silakan coba lagi.');
+        }
     }
 }

@@ -6,8 +6,11 @@ use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
+use Throwable;
 
 class ProfileController extends Controller
 {
@@ -48,10 +51,26 @@ class ProfileController extends Controller
         ]);
 
         $user = $request->user();
-
         Auth::logout();
 
-        $user->delete();
+        try {
+            DB::transaction(function () use ($user) {
+                if (Schema::hasTable('sessions')) {
+                    DB::table('sessions')->where('user_id', $user->getKey())->delete();
+                }
+
+                if (Schema::hasTable('password_reset_tokens')) {
+                    DB::table('password_reset_tokens')->where('email', $user->email)->delete();
+                }
+
+                $user->delete();
+            });
+        } catch (Throwable $e) {
+            report($e);
+
+            return Redirect::route('profile.edit')
+                ->withErrors(['password' => 'Akun gagal dihapus. Silakan coba lagi.'], 'userDeletion');
+        }
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
